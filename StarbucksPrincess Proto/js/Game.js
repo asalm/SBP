@@ -34,7 +34,10 @@ SBP.Game.prototype = {
  
     this.blockedLayer.resizeWorld();
 
-    //this.map.setCollisionBetween(1, 100000, true, 'blockedLayer');
+    //Erstellt für jedes Object aus der Tiled-Map im ObjectLayer in Objekt im Game
+    this.createBeans();
+ 
+
     //create player
  
     this.player = this.game.add.sprite(100, 700, 'player'); //Spieler erstellen, Startposition
@@ -54,7 +57,54 @@ SBP.Game.prototype = {
     leftKey = this.game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
     rightKey = this.game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
  }, 
+  findObjectsByType: function(type, map, layerName) {
  
+    var result = new Array();
+ 
+    map.objects[layerName].forEach(function(element){
+ 
+      if(element.properties.type === type) {
+ 
+        //Phaser uses top left, Tiled bottom left so we have to adjust
+ 
+        //also keep in mind that some images could be of different size as the tile size
+ 
+        //so they might not be placed in the exact position as in Tiled
+ 
+        element.y -= map.tileHeight;
+ 
+        result.push(element);
+ 
+      }     
+ 
+    });
+ 
+    return result;
+ 
+  },
+   createBeans: function	() {
+ 
+    	this.bean = this.game.add.group();
+ 
+    	this.bean.enableBody = true;
+ 
+    	var result = this.findObjectsByType('bohne', this.map, 'Bean');
+ 
+    	result.forEach(function(element){
+ 
+      	this.createFromTiledObject(element, this.bean);
+ 
+    }, this);
+ 
+  	},
+    createFromTiledObject: function(element, group) {
+    var sprite = group.create(element.x, element.y, element.properties.sprite);
+
+      //copy all properties to the sprite
+      Object.keys(element.properties).forEach(function(key){
+        sprite[key] = element.properties[key];
+      });
+  },
 
   update: function() {
   	this.game.physics.arcade.collide(this.player, this.blockedLayer) //Kollision mit Layer
@@ -93,7 +143,7 @@ SBP.Game.prototype = {
         //this.player.frame = 0;
     }
   },
- 
+
   render: function()
  
     {
@@ -101,5 +151,7 @@ SBP.Game.prototype = {
         this.game.debug.text(this.game.time.fps || '--', 20, 70, "#00ff00", "40px Courier");  
  
     }
+ 
+
  
 };

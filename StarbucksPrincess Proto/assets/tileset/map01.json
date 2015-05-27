@@ -25,8 +25,71 @@
          "width":100,
          "x":0,
          "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "height":40,
+         "name":"Bean",
+         "objects":[
+                {
+                 "gid":25,
+                 "height":32,
+                 "id":5,
+                 "name":"",
+                 "properties":
+                    {
+                     "sprite":"Coffeebean",
+                     "type":"bohne"
+                    },
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":32,
+                 "x":718.666666666667,
+                 "y":1049.33333333333
+                }, 
+                {
+                 "gid":25,
+                 "height":32,
+                 "id":6,
+                 "name":"",
+                 "properties":
+                    {
+                     "sprite":"Coffeebean",
+                     "type":"bohne"
+                    },
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":32,
+                 "x":785.333333333333,
+                 "y":1049.33333333333
+                }, 
+                {
+                 "gid":25,
+                 "height":32,
+                 "id":7,
+                 "name":"",
+                 "properties":
+                    {
+                     "sprite":"Coffeebean",
+                     "type":"bohne"
+                    },
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":32,
+                 "x":854.666666666667,
+                 "y":1046.66666666667
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "width":100,
+         "x":0,
+         "y":0
         }],
- "nextobjectid":1,
+ "nextobjectid":8,
  "orientation":"orthogonal",
  "properties":
     {
