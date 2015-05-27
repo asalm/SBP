@@ -12,10 +12,9 @@ SBP.Game.prototype = {
   create: function() {
     var map;
 	var cursors;
-	//this.game.physics.startSystem(Phaser.Physics.ARCADE); //Arcade Physics hinzufügen
-    this.game.stage.backgroundColor = '#787878';
+	this.game.stage.backgroundColor = '#787878';
  	  // create map
- 	  this.map = this.game.add.tilemap('level1');
+ 	this.map = this.game.add.tilemap('level1');
  
     //the first parameter is the tileset name as specified in Tiled, the second is the key to the asset
  
@@ -44,7 +43,9 @@ SBP.Game.prototype = {
     //physics on player
     this.game.physics.arcade.enable(this.player);
     //player gravity
-    this.player.body.gravity.y = 0;
+	this.player.body.bounce.y = 0.2;
+    this.player.body.gravity.y = 10000;
+	
     //Camera-Movement
     this.game.camera.follow(this.player);
     this.player.body.collideWorldBounds = true; //Kollision des Spielers
@@ -108,7 +109,7 @@ SBP.Game.prototype = {
   },
 
   update: function() {
-  	this.game.physics.arcade.collide(this.player, this.blockedLayer) //Kollision mit Layer
+  	this.game.physics.arcade.collide(this.player, this.blockedLayer, this.walk) //Kollision mit Layer
 	 //  Reset the players velocity (movement)
     this.player.body.velocity.x = 0; //sorgt dafür das nach Loslassen der Pfeiltasten die Spielfigur stehen bleibt
 	this.player.body.velocity.y = 0;
@@ -125,24 +126,25 @@ SBP.Game.prototype = {
         this.player.body.velocity.x = +150;
         this.player.animations.play('right');
     }
-		//Bewegung nach oben
-	else if (upKey.isDown)
-	{
-		this.player.body.velocity.y = -150;
-		//this.player.animations.play('left');
-	}
-	else if (downKey.isDown)
-	{
-		//Bewegung nach unten
-		this.player.body.velocity.y = +150;
-		//this.player.animations.play('right');
-	}
+	
     else
     {
         //  Stand still
         this.player.animations.play('stay');
         //this.player.frame = 0;
     }
+		//Sprung
+	if (upKey.isDown && this.player.body.touching.walk)
+	{
+		this.player.body.velocity.y = -350;
+		//this.player.animations.play('left');
+	}
+	/*else if (downKey.isDown)
+	{
+		//Bewegung nach unten
+		this.player.body.velocity.y = +150;
+		//this.player.animations.play('right');
+	}*/
   },
 
   render: function()
