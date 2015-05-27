@@ -15,7 +15,7 @@ SBP.Preload.prototype = {
     this.load.image('gameTiles', 'assets/tileset/tilemap.png');
  	//Bohne sprite
     this.load.image('Coffeebean', 'assets/images/bohne.png');
-    this.load.spritesheet('player', 'assets/dude.png', 32, 48);
+    this.load.spritesheet('player', 'assets/slime.png', 160, 160);
   
   },
  

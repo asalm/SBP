@@ -49,8 +49,9 @@ SBP.Game.prototype = {
     this.game.camera.follow(this.player);
     this.player.body.collideWorldBounds = true; //Kollision des Spielers
 	
-	this.player.animations.add('left', [0,1,2,3], 10, true); // Lauf-Animation
-	this.player.animations.add('right', [5,6,7,8], 10, true);
+	this.player.animations.add('left', [0,1,2,3,4], 10, true); // Lauf-Animation
+	this.player.animations.add('right', [5,6,7,8,9], 10, true);
+	this.player.animations.add('stay', [10,11,12,13], 10, true);
 	this.cursors = this.game.input.keyboard.createCursorKeys(); //Pfeiltasten aktivieren
 	upKey = this.game.input.keyboard.addKey(Phaser.Keyboard.UP);
     downKey = this.game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
@@ -139,7 +140,7 @@ SBP.Game.prototype = {
     else
     {
         //  Stand still
-        this.player.animations.stop();
+        this.player.animations.play('stay');
         //this.player.frame = 0;
     }
   },
