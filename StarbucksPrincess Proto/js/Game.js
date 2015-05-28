@@ -7,18 +7,8 @@ SBP.Game.prototype = {
   preload: function() {
  
       this.game.time.advancedTiming = true;
-	  
-    },
- 
-  create: function() {
-    var map;
-	var cursors;
-	var text;
-	var count;
-	this.count=0;
-	this.game.stage.backgroundColor = '#787878';
- 	  // create map
- 	this.map = this.game.add.tilemap('level1');
+
+      this.map = this.game.add.tilemap('level1');
  
     //the first parameter is the tileset name as specified in Tiled, the second is the key to the asset
  
@@ -29,41 +19,81 @@ SBP.Game.prototype = {
     this.walk = this.map.createLayer('Walk');
     this.blockedLayer = this.map.createLayer('BlockedLayer');
  
-    //collision on blockedLayer
- 
-    this.map.setCollisionBetween(1, 5000, true, 'BlockedLayer');
  
     //resizes the game world to match the layer dimensions
- 
     this.blockedLayer.resizeWorld();
+
+    //collision on blockedLayer
+
+    this.map.setCollisionBetween(1, 12);
+
+	  this.game.physics.arcade.setBoundsToWorld(true, true, true, true, false);
+    },
+ 
+  create: function() {
+  var map;
+	var cursors;
+	var text;
+	var count;
+	this.count=0;
+	this.game.stage.backgroundColor = '#787878';
+ 	  // create map
+ 	
+    //  Convert the tilemap layer into bodies. Only tiles that collide (see above) are created.
+    //  This call returns an array of body objects which you can perform addition actions on if
+    //  required. There is also a parameter to control optimising the map build.
+    //this.game.physics.arcade.convertTilemap(this.map, this.blockedLayer);
+    //klingt zu schön, klappt aber nicht :(( würde mit p2js-Physic vllt funktionieren?
 
     //Erstellt für jedes Object aus der Tiled-Map im ObjectLayer in Objekt im Game
     this.createBeans();
+    this.createObstacle();
  
 
     //create player
  
     this.player = this.game.add.sprite(100, 700, 'player'); //Spieler erstellen, Startposition
     //physics on player
+    
+    //Beschäftigt den Hauptthreat, damit der Nebenthreat solange das Spritesheet laden kann und der Spieler
+    //nicht durch die Welt fällt!
+    var wait, t;
+    for(wait=0;wait<10000000;wait++) t=2*3*4;
+
     this.game.physics.arcade.enable(this.player);
+
     //player gravity
-	this.player.body.bounce.y = 0.2; //bei Aufprall zurückbouncen ... ist ja nen Blob!
-	this.player.body.bounce.x = 0.2;
+	  this.player.body.bounce.y = 0.2; //bei Aufprall zurückbouncen ... ist ja nen Blob!
+	  this.player.body.bounce.x = 0.2;
     this.player.body.gravity.y = 700;
-	
+
+
+
     //Camera-Movement
     this.game.camera.follow(this.player);
     this.player.body.collideWorldBounds = true; //Kollision des Spielers
 	
-	this.player.animations.add('left', [0,1,2,3,4], 10, true); // Lauf-Animation
-	this.player.animations.add('right', [6,7,8,9,10], 10, true);
-	this.player.animations.add('stay', [12,13,14,15], 10, true);
-	this.cursors = this.game.input.keyboard.createCursorKeys(); //Pfeiltasten aktivieren
-	upKey = this.game.input.keyboard.addKey(Phaser.Keyboard.UP);
+
+    //  By default the ship will collide with the World bounds,
+    //  however because you have changed the size of the world (via layer.resizeWorld) to match the tilemap
+    //  you need to rebuild the physics world boundary as well. The following
+    //  line does that. The first 4 parameters control if you need a boundary on the left, right, top and bottom of your world.
+    //  The final parameter (false) controls if the boundary should use its own collision group or not. In this case we don't require
+    //  that, so it's set to false. But if you had custom collision groups set-up then you would need this set to true.
+
+
+    //Animationen
+	  this.player.animations.add('left', [0,1,2,3,4], 10, true); // Lauf-Animation
+	  this.player.animations.add('right', [6,7,8,9,10], 10, true);
+	  this.player.animations.add('stay', [12,13,14,15], 10, true);
+
+    //InputParameter
+	  this.cursors = this.game.input.keyboard.createCursorKeys(); //Pfeiltasten aktivieren
+	  upKey = this.game.input.keyboard.addKey(Phaser.Keyboard.UP);
     downKey = this.game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
     leftKey = this.game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
     rightKey = this.game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
-	jumpKey = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+	  jumpKey = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 	
  }, 
   
@@ -104,11 +134,23 @@ SBP.Game.prototype = {
  
       	this.createFromTiledObject(element, this.bean);
     }, this);
+
  
   	},
+    createObstacle: function (){
+      this.mahlwerk = this.game.add.group();
+      this.mahlwerk.enableBody = true;
+
+
+      var result = this.findObjectsByType('grind', this.map, 'Danger');
+        result.forEach(function(element){
+          this.createFromTiledObject(element, this.mahlwerk);
+        }, this);
+
+    },
     createFromTiledObject: function(element, group) {
     var sprite = group.create(element.x, element.y, element.properties.sprite);
-
+              console.log("Gefahr erstellt");
       //copy all properties to the sprite
       Object.keys(element.properties).forEach(function(key){
         sprite[key] = element.properties[key];
@@ -117,7 +159,8 @@ SBP.Game.prototype = {
 
   update: function() {
   	this.game.physics.arcade.collide(this.player, this.blockedLayer) //Kollision mit Layer
-	this.game.physics.arcade.overlap(this.player, this.bean, this.collectBean, null, this);
+	  this.game.physics.arcade.overlap(this.player, this.bean, this.collectBean, null, this);
+    this.game.physics.arcade.overlap(this.player, this.mahlwerk, this.hitDanger, null, this);
 	 //  Reset the players velocity (movement)
     this.player.body.velocity.x = 0; //sorgt dafür das nach Loslassen der Pfeiltasten die Spielfigur stehen bleibt
 	
@@ -140,7 +183,7 @@ SBP.Game.prototype = {
         this.player.animations.play('stay');
     }
 		//Sprung
-	if (jumpKey.isDown && this.player.body.onFloor())
+	if (upKey.isDown && this.player.body.onFloor())
 	{
 		this.player.body.velocity.y = -450;
 	}
@@ -158,7 +201,12 @@ SBP.Game.prototype = {
     // Entfernt die Bohne aus der Map und Bohnenzähler hochsetzen
     bean.kill();
 	this.count++;
-}
+  },
+  hitDanger: function(player, mahlwerk) {
+    player.kill();
+    this.count = 0;
+  }
+
  
 
  
