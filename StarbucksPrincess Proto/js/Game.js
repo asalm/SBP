@@ -34,7 +34,10 @@ SBP.Game.prototype = {
   var map;
 	var cursors;
 	var text;
+	this.text = "";
 	var count;
+	var beanTime;
+	this.beanTime = 0;
 	this.count=0;
 	this.game.stage.backgroundColor = '#787878';
  	  // create map
@@ -53,6 +56,17 @@ SBP.Game.prototype = {
     //create player
  
     this.player = this.game.add.sprite(100, 700, 'player'); //Spieler erstellen, Startposition
+	
+	//create lostBean
+	this.lostBean = this.game.add.group();
+    this.lostBean.enableBody = true;
+    this.lostBean.physicsBodyType = Phaser.Physics.ARCADE;
+    this.lostBean.createMultiple(1000, 'Coffeebean');
+    this.lostBean.setAll('anchor.x', 0.5);
+    this.lostBean.setAll('anchor.y', 0.5);
+    this.lostBean.setAll('outOfBoundsKill', true);
+    this.lostBean.setAll('checkWorldBounds', true);
+	
     //physics on player
     
     //Beschäftigt den Hauptthreat, damit der Nebenthreat solange das Spritesheet laden kann und der Spieler
@@ -63,8 +77,8 @@ SBP.Game.prototype = {
     this.game.physics.arcade.enable(this.player);
 
     //player gravity
-	  this.player.body.bounce.y = 0.2; //bei Aufprall zurückbouncen ... ist ja nen Blob!
-	  this.player.body.bounce.x = 0.2;
+	this.player.body.bounce.y = 0.2; //bei Aufprall zurückbouncen ... ist ja nen Blob!
+	this.player.body.bounce.x = 0.2;
     this.player.body.gravity.y = 700;
 
 
@@ -90,10 +104,12 @@ SBP.Game.prototype = {
     //InputParameter
 	  this.cursors = this.game.input.keyboard.createCursorKeys(); //Pfeiltasten aktivieren
 	  upKey = this.game.input.keyboard.addKey(Phaser.Keyboard.UP);
-    downKey = this.game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
-    leftKey = this.game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
-    rightKey = this.game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
-	  jumpKey = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+      downKey = this.game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
+      leftKey = this.game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
+      rightKey = this.game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
+	  fireKey = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+	  
+	  
 	
  }, 
   
@@ -159,9 +175,10 @@ SBP.Game.prototype = {
 
   update: function() {
   	this.game.physics.arcade.collide(this.player, this.blockedLayer) //Kollision mit Layer
-	  this.game.physics.arcade.overlap(this.player, this.bean, this.collectBean, null, this);
+	this.game.physics.arcade.overlap(this.player, this.bean, this.collectBean, null, this);
     this.game.physics.arcade.overlap(this.player, this.mahlwerk, this.hitDanger, null, this);
-	 //  Reset the players velocity (movement)
+	
+	//  Reset the players velocity (movement)
     this.player.body.velocity.x = 0; //sorgt dafür das nach Loslassen der Pfeiltasten die Spielfigur stehen bleibt
 	
 	if (leftKey.isDown)
@@ -169,11 +186,12 @@ SBP.Game.prototype = {
         //  Move to the left
         this.player.body.velocity.x =-150;
         this.player.animations.play('left');
+		
     }
     else if (rightKey.isDown)
     {
         //  Move to the right
-        this.player.body.velocity.x = +150;
+        this.player.body.velocity.x = +450;
         this.player.animations.play('right');
     }
 	
@@ -188,6 +206,11 @@ SBP.Game.prototype = {
 		this.player.body.velocity.y = -450;
 	}
 	
+	if (fireKey.isDown)
+	{
+		this.looseBean();
+	}
+	
   },
 
   render: function()
@@ -195,6 +218,7 @@ SBP.Game.prototype = {
     { 
         this.game.debug.text(this.game.time.fps || '--', 20, 70, "#00ff00", "40px Courier");  
 		this.game.debug.text("collected beans: " + this.count, 150, 70, "#00ff00", "40px Courier"); //Bohnenzähler
+		this.game.debug.text(this.text, 20, 250, "#00ff00", "48px Courier");
     },
 	
 	collectBean: function (player, bean) {
@@ -202,10 +226,38 @@ SBP.Game.prototype = {
     bean.kill();
 	this.count++;
   },
+  
+  looseBean: function(){
+	
+     if (this.game.time.now > this.beanTime)
+    {   
+		if(this.count > 0){
+			this.lBean = this.lostBean.getFirstExists(false);
+			this.count--;
+			if (this.lBean)
+				{
+				 this.lBean.reset(this.player.x+50, this.player.y+80);
+				 this.lBean.body.velocity.y = +400;
+				 this.beanTime = this.game.time.now + 200;
+				}
+		}else{
+			this.player.kill();
+			this.gameOver();
+		}
+	}
+  },
+  
   hitDanger: function(player, mahlwerk) {
-    player.kill();
-    this.count = 0;
-  }
+  	this.looseBean();
+    this.player.body.velocity.y =-250;
+	
+ },
+ 
+ gameOver: function(){
+	 this.text="Du bist total kaputt!!!";
+	 
+ }
+ 
 
  
 
