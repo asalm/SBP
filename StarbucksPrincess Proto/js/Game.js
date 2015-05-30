@@ -38,7 +38,7 @@ SBP.Game.prototype = {
 	var count;
 	var beanTime;
 	this.beanTime = 0;
-	this.count=0;
+	this.count=500;
 	this.game.stage.backgroundColor = '#787878';
  	  // create map
  	
@@ -51,23 +51,14 @@ SBP.Game.prototype = {
     //Erstellt für jedes Object aus der Tiled-Map im ObjectLayer in Objekt im Game
     this.createBeans();
     this.createObstacle();
+	this.createEnemys();
  
 
     //create player
  
     this.player = this.game.add.sprite(100, 700, 'player'); //Spieler erstellen, Startposition
 	
-	//create lostBean
-	this.lostBean = this.game.add.group();
-    this.lostBean.enableBody = true;
-    this.lostBean.physicsBodyType = Phaser.Physics.ARCADE;
-    this.lostBean.createMultiple(1000, 'Coffeebean');
-    this.lostBean.setAll('anchor.x', 0.5);
-    this.lostBean.setAll('anchor.y', 0.5);
-    this.lostBean.setAll('outOfBoundsKill', true);
-    this.lostBean.setAll('checkWorldBounds', true);
-	
-    //physics on player
+	//physics on player
     
     //Beschäftigt den Hauptthreat, damit der Nebenthreat solange das Spritesheet laden kann und der Spieler
     //nicht durch die Welt fällt!
@@ -80,8 +71,33 @@ SBP.Game.prototype = {
 	this.player.body.bounce.y = 0.2; //bei Aufprall zurückbouncen ... ist ja nen Blob!
 	this.player.body.bounce.x = 0.2;
     this.player.body.gravity.y = 700;
+	
+	/*var enemy1;
+	this.enemy1 = this.game.add.sprite(600, 900, 'dude');
+	this.game.physics.arcade.enable(this.enemy1);
+	this.enemy1.body.gravity.y = 700;
+	this.enemy1.body.collideWorldBounds = true;
+	this.enemy1.animations.add('left', [0,1,2,3], 10, true); // Lauf-Animation
+	this.enemy1.animations.add('right', [5,6,7,8], 10, true);*/
 
-
+	//create lostBean
+	this.lostBean = this.game.add.group();
+    this.lostBean.enableBody = true;
+    this.lostBean.createMultiple(500, 'Coffeebean');
+    this.lostBean.setAll('outOfBoundsKill', true);
+    this.lostBean.setAll('checkWorldBounds', true);
+	
+	
+	//create shootBean
+	this.shootBean = this.game.add.group();
+    this.shootBean.enableBody = true;
+    this.shootBean.physicsBodyType = Phaser.Physics.ARCADE;
+    this.shootBean.createMultiple(500, 'Coffeebean');
+    this.shootBean.setAll('anchor.x', 0.5);
+    this.shootBean.setAll('anchor.y', 0.5);
+    this.shootBean.setAll('outOfBoundsKill', true);
+    //this.shootBean.setAll('collideWorldBounds', true);
+	this.shootBean.setAll.collideWorldBounds = true;
 
     //Camera-Movement
     this.game.camera.follow(this.player);
@@ -138,32 +154,43 @@ SBP.Game.prototype = {
     return result;
  
   },
-   createBeans: function	() {
- 
-    	this.bean = this.game.add.group();
- 
-    	this.bean.enableBody = true;
- 
-    	var result = this.findObjectsByType('bohne', this.map, 'Bean');
- 
-    	result.forEach(function(element){
- 
-      	this.createFromTiledObject(element, this.bean);
-    }, this);
-
- 
+   createBeans: function() {
+     	this.bean = this.game.add.group();
+     	this.bean.enableBody = true;
+     	var result = this.findObjectsByType('bohne', this.map, 'Bean');
+     	result.forEach(function(element){
+       	this.createFromTiledObject(element, this.bean);
+			}, this);
   	},
+	
     createObstacle: function (){
       this.mahlwerk = this.game.add.group();
       this.mahlwerk.enableBody = true;
-
-
       var result = this.findObjectsByType('grind', this.map, 'Danger');
         result.forEach(function(element){
           this.createFromTiledObject(element, this.mahlwerk);
         }, this);
 
     },
+	
+	createEnemys: function (){
+      this.enemy = this.game.add.group();
+      this.enemy.enableBody = true;
+	  this.enemy.physicsBodyType = Phaser.Physics.ARCADE;
+      var result = this.findObjectsByType('enemy', this.map, 'Gegner');
+        result.forEach(function(element){
+          this.createFromTiledObject(element, this.enemy);
+        }, this);
+		this.game.physics.arcade.enable(this.enemy);
+	  this.enemy.setAll('body.gravity.y', 700);
+	  this.enemy.callAll('animations.add', 'animations','right', [5,6,7,8], 10, true);
+	  this.enemy.callAll('play', null, 'right');
+	  this.enemy.setAll('body.velocity.x', +50);
+	  this.enemy.setAll('outOfBoundsKill', true);
+      this.enemy.setAll('checkWorldBounds', true);
+
+    },
+	
     createFromTiledObject: function(element, group) {
     var sprite = group.create(element.x, element.y, element.properties.sprite);
               console.log("Gefahr erstellt");
@@ -174,7 +201,11 @@ SBP.Game.prototype = {
   },
 
   update: function() {
-  	this.game.physics.arcade.collide(this.player, this.blockedLayer) //Kollision mit Layer
+  	this.game.physics.arcade.collide(this.player, this.blockedLayer); //Kollision mit Layer
+	this.game.physics.arcade.collide(this.enemy, this.blockedLayer); //Kollision mit Layer
+	this.game.physics.arcade.collide(this.fBean, this.blockedLayer, this.collisionHandler);
+	this.game.physics.arcade.collide(this.fBean, this.enemy, this.collisionHandlerEnemy);
+	//this.game.physics.arcade.overlap(this.player, this.enemy, this.hitDanger);
 	this.game.physics.arcade.overlap(this.player, this.bean, this.collectBean, null, this);
     this.game.physics.arcade.overlap(this.player, this.mahlwerk, this.hitDanger, null, this);
 	
@@ -208,7 +239,7 @@ SBP.Game.prototype = {
 	
 	if (fireKey.isDown)
 	{
-		this.looseBean();
+		this.fireBean();
 	}
 	
   },
@@ -247,10 +278,48 @@ SBP.Game.prototype = {
 	}
   },
   
-  hitDanger: function(player, mahlwerk) {
+  fireBean: function(){
+	
+     if (this.game.time.now > this.beanTime){   
+		if(this.count > 0){
+			this.fBean = this.shootBean.getFirstExists(false);
+			this.count--;
+			if (this.fBean)
+				{
+				 this.fBean.reset(this.player.x+50, this.player.y+80);
+				 if(leftKey.isDown)
+					this.fBean.body.velocity.x = -400;
+				 else
+					this.fBean.body.velocity.x = +400;
+				 this.beanTime = this.game.time.now + 200;
+				}
+		}
+	}
+  },
+  
+  hitDanger: function(player, danger) {
+	  //Bohne verlieren und erschrockenes Wegbouncen
   	this.looseBean();
     this.player.body.velocity.y =-250;
 	
+ },
+ 
+ collisionHandler: function(fBean, blockedLayer){
+	 fBean.kill();
+ },
+ 
+ collisionHandlerEnemy: function(fBean, enemy){
+	 //Bohne weg, Gegner weg
+	 fBean.kill();
+	 enemy.reset(enemy.x+20, enemy.y+20);
+	 /*var deadE;
+	 this.deadE = this.game.add.sprite(0,0, 'dude');
+	 this.deadE.reset(enemy.body.x, enemy.body.y)
+	 this.deadE.enableBody = false;
+	 this.deadE.checkWorldBounds = false;
+	 this.deadE.collideWorldBounds =false;
+	 this.deadE.reset(deadE.x+20, enemy.y+20);*/
+	 
  },
  
  gameOver: function(){

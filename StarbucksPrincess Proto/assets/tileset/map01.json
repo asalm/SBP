@@ -81,6 +81,23 @@
                  "width":32,
                  "x":854.666666666667,
                  "y":1046.66666666667
+                }, 
+                {
+                 "gid":25,
+                 "height":32,
+                 "id":38,
+                 "name":"Bohne 4",
+                 "properties":
+                    {
+                     "sprite":"Coffeebean",
+                     "type":"bohne"
+                    },
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":32,
+                 "x":398,
+                 "y":1020
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -185,8 +202,37 @@
          "width":100,
          "x":0,
          "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "height":40,
+         "name":"Gegner",
+         "objects":[
+                {
+                 "gid":30,
+                 "height":48,
+                 "id":35,
+                 "name":"enemy",
+                 "properties":
+                    {
+                     "sprite":"dude",
+                     "type":"enemy"
+                    },
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":32,
+                 "x":566,
+                 "y":1066
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "width":100,
+         "x":0,
+         "y":0
         }],
- "nextobjectid":22,
+ "nextobjectid":39,
  "orientation":"orthogonal",
  "properties":
     {
@@ -208,6 +254,21 @@
             },
          "spacing":0,
          "tileheight":32,
+         "tilewidth":32
+        }, 
+        {
+         "firstgid":26,
+         "image":"..\/dude.png",
+         "imageheight":48,
+         "imagewidth":288,
+         "margin":0,
+         "name":"dude",
+         "properties":
+            {
+
+            },
+         "spacing":0,
+         "tileheight":48,
          "tilewidth":32
         }],
  "tilewidth":32,
