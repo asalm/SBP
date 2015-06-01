@@ -194,6 +194,7 @@ SBP.Game.prototype = {
 	  this.enemy.setAll('body.gravity.y', 700);
 	  this.enemy.callAll('animations.add', 'animations','left', [0,1,2,3], 10, true);
 	  this.enemy.callAll('animations.add', 'animations','right', [5,6,7,8], 10, true);
+	  this.enemy.callAll('animations.add', 'animations','stay', [4], 10, true);
 	  this.enemy.callAll('play', null, 'right');
 	  this.enemy.setAll('body.velocity.x', -50);
 	  this.enemy.setAll('outOfBoundsKill', true);
@@ -329,6 +330,7 @@ SBP.Game.prototype = {
  collisionHandlerEnemy: function(fBean, enemy){
 	 //Bohne weg, Gegner weg
 	 fBean.kill();
+	 enemy.animations.play('stay');
 	 enemy.body.checkCollision.down=false; //verhindert Kollisionserkennung in jede Richtung
 	 enemy.body.checkCollision.up=false;
 	 enemy.body.checkCollision.left=false;
