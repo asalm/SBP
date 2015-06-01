@@ -24,8 +24,7 @@ SBP.Game.prototype = {
     this.blockedLayer.resizeWorld();
 
     //collision on blockedLayer
-
-    this.map.setCollisionBetween(1, 12);
+	this.map.setCollisionBetween(1, 12);
 
 	  this.game.physics.arcade.setBoundsToWorld(true, true, true, true, false);
     },
@@ -92,12 +91,20 @@ SBP.Game.prototype = {
 	this.shootBean = this.game.add.group();
     this.shootBean.enableBody = true;
     this.shootBean.physicsBodyType = Phaser.Physics.ARCADE;
-    this.shootBean.createMultiple(500, 'Coffeebean');
-    this.shootBean.setAll('anchor.x', 0.5);
-    this.shootBean.setAll('anchor.y', 0.5);
+    this.shootBean.createMultiple(1, 'Coffeebean');
+	this.shootBean.setAll('body.tilePadding.x', 16);
+	this.shootBean.setAll('body.tilePadding.y', 16);
     this.shootBean.setAll('outOfBoundsKill', true);
-    //this.shootBean.setAll('collideWorldBounds', true);
-	this.shootBean.setAll.collideWorldBounds = true;
+    this.shootBean.setAll.collideWorldBounds = true;
+	
+	//create deadEnemy
+	this.deadE = this.game.add.group();
+    this.deadE.enableBody = true;
+    this.deadE.createMultiple(1, 'dude');
+    //this.deadE.setAll('anchor.x', 0.5);
+    this.deadE.setAll('anchor.y', 0.5);
+    this.deadE.setAll('outOfBoundsKill', true);
+   	this.deadE.setAll.collideWorldBounds = true;
 
     //Camera-Movement
     this.game.camera.follow(this.player);
@@ -182,14 +189,19 @@ SBP.Game.prototype = {
           this.createFromTiledObject(element, this.enemy);
         }, this);
 		this.game.physics.arcade.enable(this.enemy);
+		var dir;
+	  this.dir = +50;
 	  this.enemy.setAll('body.gravity.y', 700);
+	  this.enemy.callAll('animations.add', 'animations','left', [0,1,2,3], 10, true);
 	  this.enemy.callAll('animations.add', 'animations','right', [5,6,7,8], 10, true);
 	  this.enemy.callAll('play', null, 'right');
-	  this.enemy.setAll('body.velocity.x', +50);
+	  this.enemy.setAll('body.velocity.x', -50);
 	  this.enemy.setAll('outOfBoundsKill', true);
-      this.enemy.setAll('checkWorldBounds', true);
-
+	  
+	  
     },
+	
+	
 	
     createFromTiledObject: function(element, group) {
     var sprite = group.create(element.x, element.y, element.properties.sprite);
@@ -201,21 +213,23 @@ SBP.Game.prototype = {
   },
 
   update: function() {
+	this.game.physics.arcade.TILE_BIAS = 100;
   	this.game.physics.arcade.collide(this.player, this.blockedLayer); //Kollision mit Layer
-	this.game.physics.arcade.collide(this.enemy, this.blockedLayer); //Kollision mit Layer
+	this.game.physics.arcade.collide(this.enemy, this.blockedLayer, this.enemyMove); //Kollision mit Layer
 	this.game.physics.arcade.collide(this.fBean, this.blockedLayer, this.collisionHandler);
 	this.game.physics.arcade.collide(this.fBean, this.enemy, this.collisionHandlerEnemy);
-	//this.game.physics.arcade.overlap(this.player, this.enemy, this.hitDanger);
+	this.game.physics.arcade.overlap(this.player, this.enemy, this.hitDanger, null, this);
 	this.game.physics.arcade.overlap(this.player, this.bean, this.collectBean, null, this);
     this.game.physics.arcade.overlap(this.player, this.mahlwerk, this.hitDanger, null, this);
 	
 	//  Reset the players velocity (movement)
     this.player.body.velocity.x = 0; //sorgt dafür das nach Loslassen der Pfeiltasten die Spielfigur stehen bleibt
 	
+	
 	if (leftKey.isDown)
     {
         //  Move to the left
-        this.player.body.velocity.x =-150;
+        this.player.body.velocity.x =-450;
         this.player.animations.play('left');
 		
     }
@@ -242,7 +256,7 @@ SBP.Game.prototype = {
 		this.fireBean();
 	}
 	
-  },
+ },
 
   render: function()
  
@@ -250,6 +264,7 @@ SBP.Game.prototype = {
         this.game.debug.text(this.game.time.fps || '--', 20, 70, "#00ff00", "40px Courier");  
 		this.game.debug.text("collected beans: " + this.count, 150, 70, "#00ff00", "40px Courier"); //Bohnenzähler
 		this.game.debug.text(this.text, 20, 250, "#00ff00", "48px Courier");
+		this.game.debug.bodyInfo(this.player, 16, 24);
     },
 	
 	collectBean: function (player, bean) {
@@ -258,7 +273,35 @@ SBP.Game.prototype = {
 	this.count++;
   },
   
-  looseBean: function(){
+    
+  fireBean: function(){
+	
+     if (this.game.time.now > this.beanTime){   
+		if(this.count > 0){
+			this.fBean = this.shootBean.getFirstExists(false);
+			this.count--;
+			if (this.fBean)
+				{
+				 this.fBean.reset(this.player.x+50, this.player.y+80);
+				 if(leftKey.isDown)
+					this.fBean.body.velocity.x = -400;
+				 else
+					this.fBean.body.velocity.x = +400;
+				 this.beanTime = this.game.time.now + 200;
+				 this.shootBean.createMultiple(1, 'Coffeebean');
+				}
+		}
+	}
+  },
+  
+  hitDanger: function(player, danger) {
+	  //Bohne verlieren und erschrockenes Wegbouncen
+  	this.looseBean();
+    this.player.body.velocity.y =-250;
+	
+ },
+ 
+ looseBean: function(){
 	
      if (this.game.time.now > this.beanTime)
     {   
@@ -277,50 +320,36 @@ SBP.Game.prototype = {
 		}
 	}
   },
-  
-  fireBean: function(){
-	
-     if (this.game.time.now > this.beanTime){   
-		if(this.count > 0){
-			this.fBean = this.shootBean.getFirstExists(false);
-			this.count--;
-			if (this.fBean)
-				{
-				 this.fBean.reset(this.player.x+50, this.player.y+80);
-				 if(leftKey.isDown)
-					this.fBean.body.velocity.x = -400;
-				 else
-					this.fBean.body.velocity.x = +400;
-				 this.beanTime = this.game.time.now + 200;
-				}
-		}
-	}
-  },
-  
-  hitDanger: function(player, danger) {
-	  //Bohne verlieren und erschrockenes Wegbouncen
-  	this.looseBean();
-    this.player.body.velocity.y =-250;
-	
- },
  
- collisionHandler: function(fBean, blockedLayer){
+ collisionHandler: function(fBean){
 	 fBean.kill();
  },
+ 
  
  collisionHandlerEnemy: function(fBean, enemy){
 	 //Bohne weg, Gegner weg
 	 fBean.kill();
-	 enemy.reset(enemy.x+20, enemy.y+20);
-	 /*var deadE;
-	 this.deadE = this.game.add.sprite(0,0, 'dude');
-	 this.deadE.reset(enemy.body.x, enemy.body.y)
-	 this.deadE.enableBody = false;
-	 this.deadE.checkWorldBounds = false;
-	 this.deadE.collideWorldBounds =false;
-	 this.deadE.reset(deadE.x+20, enemy.y+20);*/
-	 
- },
+	 enemy.body.checkCollision.down=false; //verhindert Kollisionserkennung in jede Richtung
+	 enemy.body.checkCollision.up=false;
+	 enemy.body.checkCollision.left=false;
+	 enemy.body.checkCollision.right=false;
+	 	 
+	},
+
+enemyMove: function(enemy){
+	//lässt enemy wenden und in die entgegen gesetzte Richtung laufen, wenn Wand im Weg
+	if(enemy.body.blocked.left){
+	  enemy.animations.play('right');
+	  enemy.body.velocity.x = +50;
+	}
+	if(enemy.body.blocked.right){
+	  enemy.animations.play('left');
+	  enemy.body.velocity.x = -50;
+	}
+	
+},
+	
+
  
  gameOver: function(){
 	 this.text="Du bist total kaputt!!!";
