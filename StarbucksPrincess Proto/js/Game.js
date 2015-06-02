@@ -11,7 +11,8 @@ SBP.Game.prototype = {
       this.map = this.game.add.tilemap('level1');
  
     //the first parameter is the tileset name as specified in Tiled, the second is the key to the asset
- 
+	this.game.add.tileSprite(0, 0,1200,800, 'background');
+	//this.background.tileScale(200,200);
     this.map.addTilesetImage('World', 'gameTiles');
  
     //create layers
@@ -24,7 +25,7 @@ SBP.Game.prototype = {
     this.blockedLayer.resizeWorld();
 
     //collision on blockedLayer
-	this.map.setCollisionBetween(1, 12);
+	this.map.setCollisionBetween(1, 25);
 
 	  this.game.physics.arcade.setBoundsToWorld(true, true, true, true, false);
     },
@@ -39,13 +40,9 @@ SBP.Game.prototype = {
 	this.beanTime = 0;
 	this.count=500;
 	this.game.stage.backgroundColor = '#787878';
- 	  // create map
- 	
-    //  Convert the tilemap layer into bodies. Only tiles that collide (see above) are created.
-    //  This call returns an array of body objects which you can perform addition actions on if
-    //  required. There is also a parameter to control optimising the map build.
-    //this.game.physics.arcade.convertTilemap(this.map, this.blockedLayer);
-    //klingt zu schön, klappt aber nicht :(( würde mit p2js-Physic vllt funktionieren?
+	this.game.stage.smoothed = false;
+	// Background Image
+
 
     //Erstellt für jedes Object aus der Tiled-Map im ObjectLayer in Objekt im Game
     this.createBeans();
@@ -92,10 +89,6 @@ SBP.Game.prototype = {
     this.shootBean.enableBody = true;
     this.shootBean.physicsBodyType = Phaser.Physics.ARCADE;
     this.shootBean.createMultiple(1, 'Coffeebean');
-	//this.shootBean.setAll('angle', +45); // or .angle = 45;
-	//this.shootBean.setAll('cacheAsBitmap',true); 
-	this.shootBean.setAll('scale.x',.5);
-	this.shootBean.setAll('scale.y',.5);
 	this.shootBean.setAll('body.tilePadding.x', 16);
 	this.shootBean.setAll('body.tilePadding.y', 16);
     this.shootBean.setAll('outOfBoundsKill', true);
@@ -124,15 +117,9 @@ SBP.Game.prototype = {
 
 
     //Animationen
-<<<<<<< HEAD
 	  this.player.animations.add('left', [1,2,3,4,5], 5, true); // Lauf-Animation
 	  this.player.animations.add('right', [6,7,8,9,10], 5, true);
 	  this.player.animations.add('stay', [11,12,13,11,12], 5, true);
-=======
-	  this.player.animations.add('left', [0,1,2,3,4], 10, true); // Lauf-Animation
-	  this.player.animations.add('right', [5,6,7,8,9], 10, true);
-	  this.player.animations.add('stay', [10,11,12,13], 10, true);
->>>>>>> origin/master
 
     //InputParameter
 	  this.cursors = this.game.input.keyboard.createCursorKeys(); //Pfeiltasten aktivieren
@@ -291,26 +278,16 @@ SBP.Game.prototype = {
      if (this.game.time.now > this.beanTime){   
 		if(this.count > 0){
 			this.fBean = this.shootBean.getFirstExists(false);
-			
-			
 			this.count--;
 			if (this.fBean)
 				{
-<<<<<<< HEAD
 				 this.fBean.reset(this.player.x, this.player.y);
-=======
-				 this.fBean.reset(this.player.x+10, this.player.y+10);
->>>>>>> origin/master
 				 if(leftKey.isDown)
 					this.fBean.body.velocity.x = -400;
-				
 				 else
 					this.fBean.body.velocity.x = +400;
-				
 				 this.beanTime = this.game.time.now + 200;
 				 this.shootBean.createMultiple(1, 'Coffeebean');
-				 this.shootBean.setAll('scale.x',.5);
-				 this.shootBean.setAll('scale.y',.5);
 				}
 		}
 	}
@@ -332,7 +309,7 @@ SBP.Game.prototype = {
 			this.count--;
 			if (this.lBean)
 				{
-				 this.lBean.reset(this.player.x, this.player.y);
+				 this.lBean.reset(this.player.x+50, this.player.y+80);
 				 this.lBean.body.velocity.y = +400;
 				 this.beanTime = this.game.time.now + 200;
 				}
