@@ -20,9 +20,15 @@ SBP.Preload.prototype = {
     this.load.image('Mahlwerk', 'assets/images/Mahlwerk.png');
   //Player sprite
 
-    this.load.spritesheet('player', 'assets/nSlime_32x36_sheet.png', 32, 36);
-    
-	this.load.spritesheet('dude', 'assets/dude.png', 32,48);
+    this.load.spritesheet('player', 'assets/char/nSlime_32x36_sheet.png', 32, 36);
+    this.load.spritesheet('dude', 'assets/dude.png', 32,48);
+	
+	//Sounds
+	this.load.audio('walk', 'assets/sounds/walk.mp3');
+	this.load.audio('shoot', 'assets/sounds/shoot.mp3');
+	this.load.audio('death', 'assets/sounds/death.mp3');
+	this.load.audio('hit', 'assets/sounds/hit.mp3');
+	this.load.audio('jump', 'assets/sounds/jump.mp3');
 	
   
   },
