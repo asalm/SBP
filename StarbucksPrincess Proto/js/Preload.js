@@ -19,7 +19,7 @@ SBP.Preload.prototype = {
   //Mahlwerk sprite
     this.load.image('Mahlwerk', 'assets/images/Mahlwerk.png');
   //Player sprite
-    this.load.spritesheet('player', 'assets/schleim.png', 96, 124);
+    this.load.spritesheet('player', 'assets/char/nSlime_32x36_sheet.png', 32, 36);
 	this.load.spritesheet('dude', 'assets/dude.png', 32,48);
 	
   

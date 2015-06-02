@@ -55,7 +55,7 @@ SBP.Game.prototype = {
 
     //create player
  
-    this.player = this.game.add.sprite(100, 700, 'player'); //Spieler erstellen, Startposition
+    this.player = this.game.add.sprite(30, 30, 'player'); //Spieler erstellen, Startposition, Name
 	
 	//physics on player
     
@@ -120,9 +120,9 @@ SBP.Game.prototype = {
 
 
     //Animationen
-	  this.player.animations.add('left', [0,1,2,3,4], 10, true); // Lauf-Animation
-	  this.player.animations.add('right', [6,7,8,9,10], 10, true);
-	  this.player.animations.add('stay', [12,13,14,15], 10, true);
+	  this.player.animations.add('left', [1,2,3,4,5], 5, true); // Lauf-Animation
+	  this.player.animations.add('right', [6,7,8,9,10], 5, true);
+	  this.player.animations.add('stay', [11,12,13,11,12], 5, true);
 
     //InputParameter
 	  this.cursors = this.game.input.keyboard.createCursorKeys(); //Pfeiltasten aktivieren
@@ -214,8 +214,9 @@ SBP.Game.prototype = {
   },
 
   update: function() {
-	this.game.physics.arcade.TILE_BIAS = 100;
+	this.game.physics.arcade.TILE_BIAS = 50;
   	this.game.physics.arcade.collide(this.player, this.blockedLayer); //Kollision mit Layer
+
 	this.game.physics.arcade.collide(this.enemy, this.blockedLayer, this.enemyMove); //Kollision mit Layer
 	this.game.physics.arcade.collide(this.fBean, this.blockedLayer, this.collisionHandler);
 	this.game.physics.arcade.collide(this.fBean, this.enemy, this.collisionHandlerEnemy);
@@ -230,14 +231,14 @@ SBP.Game.prototype = {
 	if (leftKey.isDown)
     {
         //  Move to the left
-        this.player.body.velocity.x =-450;
+        this.player.body.velocity.x =-250;
         this.player.animations.play('left');
 		
     }
     else if (rightKey.isDown)
     {
         //  Move to the right
-        this.player.body.velocity.x = +450;
+        this.player.body.velocity.x = +250;
         this.player.animations.play('right');
     }
 	
@@ -249,7 +250,7 @@ SBP.Game.prototype = {
 		//Sprung
 	if (upKey.isDown && this.player.body.onFloor())
 	{
-		this.player.body.velocity.y = -450;
+		this.player.body.velocity.y = -400;
 	}
 	
 	if (fireKey.isDown)
@@ -283,7 +284,7 @@ SBP.Game.prototype = {
 			this.count--;
 			if (this.fBean)
 				{
-				 this.fBean.reset(this.player.x+50, this.player.y+80);
+				 this.fBean.reset(this.player.x, this.player.y);
 				 if(leftKey.isDown)
 					this.fBean.body.velocity.x = -400;
 				 else
