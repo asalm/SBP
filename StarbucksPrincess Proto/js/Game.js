@@ -50,6 +50,15 @@ SBP.Game.prototype = {
 	this.createEnemys();
  
 
+	//create sounds
+	this.walk = this.game.add.audio('walk');
+	this.hit = this.game.add.audio('hit');
+	this.death = this.game.add.audio('death');
+	this.shoot = this.game.add.audio('shoot');
+	this.jump = this.game.add.audio('jump');
+	
+	//this.game.sound.setDecodedCallback([ this.walk, this.hit, this.death, this.shoot ], start, this);
+
     //create player
  
     this.player = this.game.add.sprite(30, 30, 'player'); //Spieler erstellen, Startposition, Name
@@ -87,8 +96,12 @@ SBP.Game.prototype = {
 	//create shootBean
 	this.shootBean = this.game.add.group();
     this.shootBean.enableBody = true;
-    this.shootBean.physicsBodyType = Phaser.Physics.ARCADE;
+    //this.shootBean.physicsBodyType = Phaser.Physics.ARCADE;
     this.shootBean.createMultiple(1, 'Coffeebean');
+	//this.shootBean.setAll('angle', +45); // or .angle = 45;
+	//this.shootBean.setAll('cacheAsBitmap',true); 
+	this.shootBean.setAll('scale.x',.5);
+	this.shootBean.setAll('scale.y',.5);
 	this.shootBean.setAll('body.tilePadding.x', 16);
 	this.shootBean.setAll('body.tilePadding.y', 16);
     this.shootBean.setAll('outOfBoundsKill', true);
@@ -117,9 +130,9 @@ SBP.Game.prototype = {
 
 
     //Animationen
-	  this.player.animations.add('left', [1,2,3,4,5], 5, true); // Lauf-Animation
-	  this.player.animations.add('right', [6,7,8,9,10], 5, true);
-	  this.player.animations.add('stay', [11,12,13,11,12], 5, true);
+	  this.player.animations.add('left', [0,1,2,3,4], 5, true); // Lauf-Animation
+	  this.player.animations.add('right', [5,6,7,8,9], 5, true);
+	  this.player.animations.add('stay', [10,11,12,13], 5, true);
 
     //InputParameter
 	  this.cursors = this.game.input.keyboard.createCursorKeys(); //Pfeiltasten aktivieren
@@ -213,9 +226,9 @@ SBP.Game.prototype = {
   update: function() {
 	this.game.physics.arcade.TILE_BIAS = 50;
   	this.game.physics.arcade.collide(this.player, this.blockedLayer); //Kollision mit Layer
-
+  	this.game.physics.arcade.overlap(this.player, this.blockedLayer); //Kollision mit Layer
 	this.game.physics.arcade.collide(this.enemy, this.blockedLayer, this.enemyMove); //Kollision mit Layer
-	this.game.physics.arcade.collide(this.fBean, this.blockedLayer, this.collisionHandler);
+	this.game.physics.arcade.overlap(this.fBean, this.blockedLayer, this.collisionHandler, null, this);
 	this.game.physics.arcade.collide(this.fBean, this.enemy, this.collisionHandlerEnemy);
 	this.game.physics.arcade.overlap(this.player, this.enemy, this.hitDanger, null, this);
 	this.game.physics.arcade.overlap(this.player, this.bean, this.collectBean, null, this);
@@ -230,13 +243,16 @@ SBP.Game.prototype = {
         //  Move to the left
         this.player.body.velocity.x =-250;
         this.player.animations.play('left');
-		
+		if(!this.walk.isPlaying && this.player.body.onFloor())
+			this.walk.play();
     }
     else if (rightKey.isDown)
     {
         //  Move to the right
         this.player.body.velocity.x = +250;
         this.player.animations.play('right');
+		if(!this.walk.isPlaying && this.player.body.onFloor())
+			this.walk.play();
     }
 	
     else
@@ -248,6 +264,7 @@ SBP.Game.prototype = {
 	if (upKey.isDown && this.player.body.onFloor())
 	{
 		this.player.body.velocity.y = -400;
+		this.jump.play();
 	}
 	
 	if (fireKey.isDown)
@@ -256,6 +273,7 @@ SBP.Game.prototype = {
 	}
 	
  },
+
 
   render: function()
  
@@ -278,16 +296,22 @@ SBP.Game.prototype = {
      if (this.game.time.now > this.beanTime){   
 		if(this.count > 0){
 			this.fBean = this.shootBean.getFirstExists(false);
+						
 			this.count--;
 			if (this.fBean)
 				{
-				 this.fBean.reset(this.player.x, this.player.y);
+				 this.fBean.reset(this.player.x+15, this.player.y+15);
 				 if(leftKey.isDown)
 					this.fBean.body.velocity.x = -400;
 				 else
 					this.fBean.body.velocity.x = +400;
+				
+				 this.shoot.play();
 				 this.beanTime = this.game.time.now + 200;
 				 this.shootBean.createMultiple(1, 'Coffeebean');
+				 this.shootBean.setAll('scale.x',.5);
+				 this.shootBean.setAll('scale.y',.5);
+				 this.shootBean.setAll('angle', +45);
 				}
 		}
 	}
@@ -309,13 +333,15 @@ SBP.Game.prototype = {
 			this.count--;
 			if (this.lBean)
 				{
-				 this.lBean.reset(this.player.x+50, this.player.y+80);
+				 this.lBean.reset(this.player.x, this.player.y);
 				 this.lBean.body.velocity.y = +400;
+				 this.hit.play();
 				 this.beanTime = this.game.time.now + 200;
 				}
 		}else{
 			this.player.kill();
 			this.gameOver();
+			this.death.play();
 		}
 	}
   },
