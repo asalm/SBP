@@ -92,6 +92,10 @@ SBP.Game.prototype = {
     this.shootBean.enableBody = true;
     this.shootBean.physicsBodyType = Phaser.Physics.ARCADE;
     this.shootBean.createMultiple(1, 'Coffeebean');
+	//this.shootBean.setAll('angle', +45); // or .angle = 45;
+	//this.shootBean.setAll('cacheAsBitmap',true); 
+	this.shootBean.setAll('scale.x',.5);
+	this.shootBean.setAll('scale.y',.5);
 	this.shootBean.setAll('body.tilePadding.x', 16);
 	this.shootBean.setAll('body.tilePadding.y', 16);
     this.shootBean.setAll('outOfBoundsKill', true);
@@ -120,9 +124,15 @@ SBP.Game.prototype = {
 
 
     //Animationen
+<<<<<<< HEAD
 	  this.player.animations.add('left', [1,2,3,4,5], 5, true); // Lauf-Animation
 	  this.player.animations.add('right', [6,7,8,9,10], 5, true);
 	  this.player.animations.add('stay', [11,12,13,11,12], 5, true);
+=======
+	  this.player.animations.add('left', [0,1,2,3,4], 10, true); // Lauf-Animation
+	  this.player.animations.add('right', [5,6,7,8,9], 10, true);
+	  this.player.animations.add('stay', [10,11,12,13], 10, true);
+>>>>>>> origin/master
 
     //InputParameter
 	  this.cursors = this.game.input.keyboard.createCursorKeys(); //Pfeiltasten aktivieren
@@ -281,16 +291,26 @@ SBP.Game.prototype = {
      if (this.game.time.now > this.beanTime){   
 		if(this.count > 0){
 			this.fBean = this.shootBean.getFirstExists(false);
+			
+			
 			this.count--;
 			if (this.fBean)
 				{
+<<<<<<< HEAD
 				 this.fBean.reset(this.player.x, this.player.y);
+=======
+				 this.fBean.reset(this.player.x+10, this.player.y+10);
+>>>>>>> origin/master
 				 if(leftKey.isDown)
 					this.fBean.body.velocity.x = -400;
+				
 				 else
 					this.fBean.body.velocity.x = +400;
+				
 				 this.beanTime = this.game.time.now + 200;
 				 this.shootBean.createMultiple(1, 'Coffeebean');
+				 this.shootBean.setAll('scale.x',.5);
+				 this.shootBean.setAll('scale.y',.5);
 				}
 		}
 	}
@@ -312,7 +332,7 @@ SBP.Game.prototype = {
 			this.count--;
 			if (this.lBean)
 				{
-				 this.lBean.reset(this.player.x+50, this.player.y+80);
+				 this.lBean.reset(this.player.x, this.player.y);
 				 this.lBean.body.velocity.y = +400;
 				 this.beanTime = this.game.time.now + 200;
 				}
