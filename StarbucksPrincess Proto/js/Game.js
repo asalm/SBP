@@ -92,9 +92,10 @@ SBP.Game.prototype = {
     this.shootBean.enableBody = true;
     this.shootBean.physicsBodyType = Phaser.Physics.ARCADE;
     this.shootBean.createMultiple(1, 'Coffeebean');
-	this.shootBean.setAll('body.rotation', .78); // or .angle = 45;
-	this.shootBean.setAll('cacheAsBitmap',true); 
-	this.shootBean.setAll('scale.set',1,.5);
+	//this.shootBean.setAll('angle', +45); // or .angle = 45;
+	//this.shootBean.setAll('cacheAsBitmap',true); 
+	this.shootBean.setAll('scale.x',.5);
+	this.shootBean.setAll('scale.y',.5);
 	this.shootBean.setAll('body.tilePadding.x', 16);
 	this.shootBean.setAll('body.tilePadding.y', 16);
     this.shootBean.setAll('outOfBoundsKill', true);
@@ -288,7 +289,7 @@ SBP.Game.prototype = {
 			this.count--;
 			if (this.fBean)
 				{
-				 this.fBean.reset(this.player.x, this.player.y);
+				 this.fBean.reset(this.player.x+10, this.player.y+10);
 				 if(leftKey.isDown)
 					this.fBean.body.velocity.x = -400;
 				
@@ -297,6 +298,8 @@ SBP.Game.prototype = {
 				
 				 this.beanTime = this.game.time.now + 200;
 				 this.shootBean.createMultiple(1, 'Coffeebean');
+				 this.shootBean.setAll('scale.x',.5);
+				 this.shootBean.setAll('scale.y',.5);
 				}
 		}
 	}
