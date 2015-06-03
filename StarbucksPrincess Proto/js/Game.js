@@ -31,7 +31,8 @@ SBP.Game.prototype = {
     },
  
   create: function() {
-  var map;
+
+	var map;
 	var cursors;
 	var text;
 	this.text = "";
