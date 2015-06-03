@@ -22,6 +22,10 @@ SBP.Preload.prototype = {
     
   //Background Image
     this.load.image("background", "assets/images/Background.jpg");  
+	this.load.image("keyboard", "assets/images/pfeiltasten.png");  
+	this.load.image("touch", "assets/images/touch.png");  
+	this.load.image("gamepad", "assets/images/gamepad.png");  
+	this.load.atlas('dpad', 'assets/joystick/dpad.png', 'assets/joystick/dpad.json');
   //Map
     this.load.tilemap('level1', 'assets/tileset/map01.json', null, Phaser.Tilemap.TILED_JSON);
   //Tileset

@@ -1,8 +1,8 @@
 var SBP = SBP || {};
  
-SBP.GameMitPad = function(){};
+SBP.GameTOUCH = function(){};
  
-SBP.GameMitPad.prototype = {
+SBP.GameTOUCH.prototype = {
  
   preload: function() {
  
@@ -28,6 +28,7 @@ SBP.GameMitPad.prototype = {
 	this.map.setCollisionBetween(1, 25);
 
 	  this.game.physics.arcade.setBoundsToWorld(true, true, true, true, false);
+	  
     },
  
   create: function() {
@@ -57,6 +58,8 @@ SBP.GameMitPad.prototype = {
 	this.death = this.game.add.audio('death');
 	this.shoot = this.game.add.audio('shoot');
 	this.jump = this.game.add.audio('jump');
+	
+	//this.game.sound.setDecodedCallback([ this.walk, this.hit, this.death, this.shoot ], start, this);
 
     //create player
  
@@ -76,7 +79,6 @@ SBP.GameMitPad.prototype = {
 	this.player.body.bounce.x = 0.2;
     this.player.body.gravity.y = 700;
 	
-
 	//create lostBean
 	this.lostBean = this.game.add.group();
     this.lostBean.enableBody = true;
@@ -90,6 +92,8 @@ SBP.GameMitPad.prototype = {
     this.shootBean.enableBody = true;
     //this.shootBean.physicsBodyType = Phaser.Physics.ARCADE;
     this.shootBean.createMultiple(1, 'Coffeebean');
+	//this.shootBean.setAll('angle', +45); // or .angle = 45;
+	//this.shootBean.setAll('cacheAsBitmap',true); 
 	this.shootBean.setAll('scale.x',.5);
 	this.shootBean.setAll('scale.y',.5);
 	this.shootBean.setAll('body.tilePadding.x', 16);
@@ -125,60 +129,40 @@ SBP.GameMitPad.prototype = {
 	  this.player.animations.add('stay', [10,11,12,13], 5, true);
 
     //InputParameter
-	  /*this.cursors = this.game.input.keyboard.createCursorKeys(); //Pfeiltasten aktivieren
-	  upKey = this.game.input.keyboard.addKey(Phaser.Keyboard.UP);
-      downKey = this.game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
-      leftKey = this.game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
-      rightKey = this.game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
-	  fireKey = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);*/
-	  this.game.input.gamepad.start();
-	  this.pad = this.game.input.gamepad.pad1;
-	  this.pad.addCallbacks(this, { onConnect: this.addButtons });
-	 
-	console.log("Gamepadsupport", this.game.input.gamepad.supported);
-	console.log("Gamepad aktiv", this.game.input.gamepad.active);
- },
+	   
+	  this.pad = this.game.plugins.add(Phaser.VirtualJoystick);
+	  this.stick = this.pad.addDPad(0, 0, 200, 'dpad');
+	  this.stick.alignBottomLeft(0);
+	  
+	  this.buttonA = this.pad.addButton(500, 520, 'dpad', 'button1-up', 'button1-down');
+      this.buttonA.onDown.add(this.pressButtonA, this);
+
+      this.buttonB = this.pad.addButton(615, 450, 'dpad', 'button2-up', 'button2-down');
+      this.buttonB.onDown.add(this.pressButtonB, this);
+
+      this.buttonC = this.pad.addButton(730, 520, 'dpad', 'button3-up', 'button3-down');
+      this.buttonC.onDown.add(this.pressButtonC, this);
+	  
+	
+ }, 
  
-  addButtons: function(){
-	  this.upKey = this.pad.getButton(Phaser.Gamepad.XBOX360_A);
-      //this.downKey = this.game.input.pad.getButton(Phaser.Gamepad.XBOX360_DPAD_DOWN);
-      this.leftKey = this.pad.getButton(Phaser.Gamepad.XBOX360_DPAD_LEFT);
-      this.rightKey = this.pad.getButton(Phaser.Gamepad.XBOX360_DPAD_RIGHT);
-	  this.fireKey = this.pad.getButton(Phaser.Gamepad.XBOX360_B);
-	  
-	  this.upKey.onDown.add(this.onDown, this);
-      this.fireKey.onDown.add(this.onDown, this);
-	  this.leftKey.onDown.add(this.onDown, this);
-      this.rightKey.onDown.add(this.onDown, this);
-  },
-  
-  onDown: function(button, value){
-	  if (button.buttonCode === Phaser.Gamepad.XBOX360_A)
-    {
-        this.player.body.velocity.y = -400;
-		this.jump.play();
-    }
-    else if (button.buttonCode === Phaser.Gamepad.XBOX360_B)
-    {
+ pressButtonA: function () {
+
         this.fireBean();
-    }
-    else if (button.buttonCode === Phaser.Gamepad.XBOX360_LEFT)
-    {
-        this.player.body.velocity.y = -250;
-        this.player.animations.play('left');
-		if(!this.walk.isPlaying && this.player.body.onFloor())
-			this.walk.play();
-    }
-    else if (button.buttonCode === Phaser.Gamepad.XBOX360_RIGHT)
-    {
-         this.player.body.velocity.y = +250;
-        this.player.animations.play('right');
-		if(!this.walk.isPlaying && this.player.body.onFloor())
-			this.walk.play();
-    }
-	  
-  },
-  
+
+    },
+
+    pressButtonB: function () {
+
+       
+
+    },
+
+    pressButtonC: function () {
+
+        
+
+    },
   
   findObjectsByType: function(type, map, layerName) {
  
@@ -270,44 +254,41 @@ SBP.GameMitPad.prototype = {
 	
 	//  Reset the players velocity (movement)
     this.player.body.velocity.x = 0; //sorgt dafür das nach Loslassen der Pfeiltasten die Spielfigur stehen bleibt
+	var maxSpeed = 250;
+	
+	if (this.stick.isDown){
+		this.player.body.velocity.set = 0;
 	
 	
-	/*if (this.pad.isDown(Phaser.Gamepad.XBOX360_DPAD_LEFT))
-    {
-        //  Move to the left
-        this.player.body.velocity.y = -250;
-        this.player.animations.play('left');
-		if(!this.walk.isPlaying && this.player.body.onFloor())
-			this.walk.play();
-    }
-	
-    else if (this.rightKey.isDown)
-    {
-        //  Move to the right
-        this.player.body.velocity.y = +250;
-        this.player.animations.play('right');
-		if(!this.walk.isPlaying && this.player.body.onFloor())
-			this.walk.play();
-    }
+		if (this.stick.direction === Phaser.LEFT){
+			//  Move to the left
+			this.player.body.velocity.x = -this.maxSpeed;
+			this.player.animations.play('left');
+			if(!this.walk.isPlaying && this.player.body.onFloor())
+				this.walk.play();
+		}
+		else if (this.stick.direction === Phaser.RIGHT)
+		{
+			//  Move to the right
+			this.player.body.velocity.x = +this.maxSpeed;
+			this.player.animations.play('right');
+			if(!this.walk.isPlaying && this.player.body.onFloor())
+				this.walk.play();
+		}
 		
-    else
-    {
-        //  Stand still
-        this.player.animations.play('stay');
-    }
-	
 		//Sprung
-	if (this.pad.isDown(Phaser.Gamepad.XBOX360_DPAD_A) < -0.1 && this.player.body.onFloor())
-	{
-		this.player.body.velocity.y = -400;
-		this.jump.play();
+		else if (this.stick.direction === Phaser.UP && this.player.body.onFloor())
+		{
+			this.player.body.velocity.y = -400;
+			this.jump.play();
+		}
+	
 	}
-	
-	if (this.pad.isDown(Phaser.Gamepad.XBOX360_DPAD_B) < -0.1)
+	else
 	{
-		this.fireBean();
-	}*/
-	
+		this.player.body.velocity.set(0);
+		this.player.animations.play('stay');
+	}
  },
 
 
