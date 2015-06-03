@@ -28,7 +28,7 @@ SBP.GameTOUCH.prototype = {
 	this.map.setCollisionBetween(1, 25);
 
 	  this.game.physics.arcade.setBoundsToWorld(true, true, true, true, false);
-	  
+	  this.load.atlas('dpad', 'assets/joystick/dpad.png', 'assets/joystick/dpad.json');
     },
  
   create: function() {
@@ -133,34 +133,42 @@ SBP.GameTOUCH.prototype = {
 	  this.pad = this.game.plugins.add(Phaser.VirtualJoystick);
 	  this.stick = this.pad.addDPad(0, 0, 200, 'dpad');
 	  this.stick.alignBottomLeft(0);
-	  
-	  this.buttonA = this.pad.addButton(500, 520, 'dpad', 'button1-up', 'button1-down');
-      this.buttonA.onDown.add(this.pressButtonA, this);
+	   //  Called when the stick is no longer being used
+        this.stick.onDown.add(this.startSub, this);
 
-      this.buttonB = this.pad.addButton(615, 450, 'dpad', 'button2-up', 'button2-down');
-      this.buttonB.onDown.add(this.pressButtonB, this);
+        //  Only called when the stick MOVES
+        // this.stick.onMove.add(this.moveSub, this);
 
-      this.buttonC = this.pad.addButton(730, 520, 'dpad', 'button3-up', 'button3-down');
-      this.buttonC.onDown.add(this.pressButtonC, this);
-	  
+        //  Called constantly while the stick is active
+        this.stick.onUpdate.add(this.moveSub, this);
+
+        //  Called when the stick is no longer being used
+        this.stick.onUp.add(this.stopSub, this);	  
 	
  }, 
  
- pressButtonA: function () {
+ startSub: function () {
 
-        this.fireBean();
-
-    },
-
-    pressButtonB: function () {
-
-       
+        this.player.alpha = 1;
 
     },
 
-    pressButtonC: function () {
+    moveSub: function (stick, force, forceX, forceY) {
 
-        
+        this.player.body.velocity.x = this.stick.forceX * 200;
+        this.player.body.velocity.y = this.stick.forceY * 120;
+
+        if (this.player.y < 116)
+        {
+            this.player.y = 116;
+        }
+
+    },
+
+    stopSub: function () {
+
+        this.player.body.velocity.set(0);
+        this.player.alpha = 0.5;
 
     },
   
@@ -255,7 +263,7 @@ SBP.GameTOUCH.prototype = {
 	//  Reset the players velocity (movement)
     this.player.body.velocity.x = 0; //sorgt dafür das nach Loslassen der Pfeiltasten die Spielfigur stehen bleibt
 	var maxSpeed = 250;
-	
+	/*
 	if (this.stick.isDown){
 		this.player.body.velocity.set = 0;
 	
@@ -288,7 +296,7 @@ SBP.GameTOUCH.prototype = {
 	{
 		this.player.body.velocity.set(0);
 		this.player.animations.play('stay');
-	}
+	}*/
  },
 
 

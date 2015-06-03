@@ -26,6 +26,7 @@ SBP.GameMitPad.prototype = {
 
     //collision on blockedLayer
 	this.map.setCollisionBetween(1, 25);
+	
 
 	  this.game.physics.arcade.setBoundsToWorld(true, true, true, true, false);
     },
@@ -125,18 +126,14 @@ SBP.GameMitPad.prototype = {
 	  this.player.animations.add('stay', [10,11,12,13], 5, true);
 
     //InputParameter
-	  /*this.cursors = this.game.input.keyboard.createCursorKeys(); //Pfeiltasten aktivieren
-	  upKey = this.game.input.keyboard.addKey(Phaser.Keyboard.UP);
-      downKey = this.game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
-      leftKey = this.game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
-      rightKey = this.game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
-	  fireKey = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);*/
+	 
 	  this.game.input.gamepad.start();
 	  this.pad = this.game.input.gamepad.pad1;
-	  this.pad.addCallbacks(this, { onConnect: this.addButtons });
+	 // this.pad.addCallbacks(this, { onConnect: this.addButtons });
 	 
 	console.log("Gamepadsupport", this.game.input.gamepad.supported);
 	console.log("Gamepad aktiv", this.game.input.gamepad.active);
+	console.log("Gamepad connected", this.game.input.gamepad.pad1.connected)
  },
  
   addButtons: function(){
@@ -269,8 +266,33 @@ SBP.GameMitPad.prototype = {
     this.game.physics.arcade.overlap(this.player, this.mahlwerk, this.hitDanger, null, this);
 	
 	//  Reset the players velocity (movement)
-    this.player.body.velocity.x = 0; //sorgt dafür das nach Loslassen der Pfeiltasten die Spielfigur stehen bleibt
+    //this.player.body.velocity.x = 0; //sorgt dafür das nach Loslassen der Pfeiltasten die Spielfigur stehen bleibt
 	
+	 if (this.pad.isDown(Phaser.Gamepad.XBOX360_DPAD_LEFT) || this.pad.axis(Phaser.Gamepad.XBOX360_STICK_LEFT_X) < -0.1)
+    {
+        this.player.x--;
+    }
+    if (this.game.input.gamepad.isDown(Phaser.Gamepad.XBOX360_DPAD_RIGHT))
+    {
+        this.player.x++;
+    }
+    if (this.pad.isDown(Phaser.Gamepad.XBOX360_DPAD_UP) || this.pad.axis(Phaser.Gamepad.XBOX360_STICK_LEFT_Y) < -0.1)
+    {
+        this.player.y--;
+    }
+    if (this.pad.isDown(Phaser.Gamepad.XBOX360_DPAD_DOWN) || this.pad.axis(Phaser.Gamepad.XBOX360_STICK_LEFT_Y) > 0.1)
+    {
+        this.player.y++;
+    }
+    if (this.game.input.gamepad.isDown(Phaser.Gamepad.XBOX360_A))
+    {
+        this.fireBean();
+    }
+    if (this.pad.justReleased(Phaser.Gamepad.XBOX360_B))
+    {
+        this.player.scale.x += 0.01;
+        this.player.scale.y = sprite.scale.x;
+    }
 	
 	/*if (this.pad.isDown(Phaser.Gamepad.XBOX360_DPAD_LEFT))
     {

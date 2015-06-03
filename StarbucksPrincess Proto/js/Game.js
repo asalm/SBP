@@ -36,10 +36,10 @@ SBP.Game.prototype = {
 	var cursors;
 	var text;
 	this.text = "";
-	var count;
+	//var count;
 	var beanTime;
 	this.beanTime = 0;
-	this.count=500;
+	this.count=50;
 	this.game.stage.backgroundColor = '#787878';
 	this.game.stage.smoothed = false;
 	// Background Image
@@ -328,7 +328,7 @@ SBP.Game.prototype = {
 	}
   },
   
-  hitDeadly: function(player, deadly) {
+  hitDeadly: function(player) {
   	this.player.kill();
   	this.gameOver();
   	this.death.play();
