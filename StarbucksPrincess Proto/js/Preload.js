@@ -30,6 +30,8 @@ SBP.Preload.prototype = {
     this.load.image('Coffeebean', 'assets/images/bohne.png');
   //Mahlwerk sprite
     this.load.image('Mahlwerk', 'assets/images/Mahlwerk.png');
+  //Deadly sprite
+    this.load.image('poisen', 'assets/images/poisen.png');  
   //Player sprite
 
     this.load.spritesheet('player', 'assets/char/nSlime_32x36_sheet.png', 32, 36);
@@ -46,7 +48,7 @@ SBP.Preload.prototype = {
  
   create: function() {
  
-    this.state.start('Loadscreen1');
+    this.game.state.start('Menu');
  
   }
  

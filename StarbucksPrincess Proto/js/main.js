@@ -6,7 +6,7 @@ SBP.game.state.add('Boot', SBP.Boot);
  
 SBP.game.state.add('Preload', SBP.Preload);
  
-SBP.game.state.add('Loadscreen1', SBP.Loadscreen1);
+SBP.game.state.add('Menu', SBP.Menu);
 
 SBP.game.state.add('GameMitPad', SBP.GameMitPad);
 

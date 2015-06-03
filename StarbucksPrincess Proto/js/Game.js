@@ -49,6 +49,7 @@ SBP.Game.prototype = {
     this.createBeans();
     this.createObstacle();
 	this.createEnemys();
+	this.createDeadly();
  
 
 	//create sounds
@@ -180,7 +181,15 @@ SBP.Game.prototype = {
        	this.createFromTiledObject(element, this.bean);
 			}, this);
   	},
-	
+	createDeadly: function() {
+		this.deadly = this.game.add.group();
+		this.deadly.enableBody = true;
+		var result = this.findObjectsByType('deadly',this.map,'Deadly');
+		result.forEach(function(element){
+			this.createFromTiledObject(element, this.deadly);
+		}, this);
+		
+	 },
     createObstacle: function (){
       this.mahlwerk = this.game.add.group();
       this.mahlwerk.enableBody = true;
@@ -234,6 +243,7 @@ SBP.Game.prototype = {
 	this.game.physics.arcade.overlap(this.player, this.enemy, this.hitDanger, null, this);
 	this.game.physics.arcade.overlap(this.player, this.bean, this.collectBean, null, this);
     this.game.physics.arcade.overlap(this.player, this.mahlwerk, this.hitDanger, null, this);
+    this.game.physics.arcade.overlap(this.player, this.deadly, this.hitDeadly, null, this);
 	
 	//  Reset the players velocity (movement)
     this.player.body.velocity.x = 0; //sorgt dafür das nach Loslassen der Pfeiltasten die Spielfigur stehen bleibt
@@ -318,6 +328,12 @@ SBP.Game.prototype = {
 	}
   },
   
+  hitDeadly: function(player, deadly) {
+  	this.player.kill();
+  	this.gameOver();
+  	this.death.play();
+  },
+
   hitDanger: function(player, danger) {
 	  //Bohne verlieren und erschrockenes Wegbouncen
   	this.looseBean();

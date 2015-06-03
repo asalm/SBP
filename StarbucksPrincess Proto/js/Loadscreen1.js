@@ -1,8 +1,8 @@
 var SBP = SBP || {};
  
-SBP.Loadscreen1 = function(){};
+SBP.Menu = function(){};
  
-SBP.Loadscreen1.prototype = {
+SBP.Menu.prototype = {
  
   create: function() {
 	  
