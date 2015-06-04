@@ -9,6 +9,7 @@ SBP.Game.prototype = {
       this.game.time.advancedTiming = true;
 
       this.map = this.game.add.tilemap('level1');
+
  
     //the first parameter is the tileset name as specified in Tiled, the second is the key to the asset
 	this.game.add.tileSprite(0, 0,1200,800, 'background');
@@ -19,11 +20,11 @@ SBP.Game.prototype = {
  
     this.walk = this.map.createLayer('Walk');
     this.blockedLayer = this.map.createLayer('BlockedLayer');
- 
+
  
     //resizes the game world to match the layer dimensions
     this.blockedLayer.resizeWorld();
-
+	this.blockedLayer.smoothed = false;
     //collision on blockedLayer
 	this.map.setCollisionBetween(1, 25);
 
@@ -41,7 +42,7 @@ SBP.Game.prototype = {
 	this.beanTime = 0;
 	this.count=50;
 	this.game.stage.backgroundColor = '#787878';
-	this.game.stage.smoothed = false;
+
 	// Background Image
 
 
@@ -64,13 +65,12 @@ SBP.Game.prototype = {
     //create player
  
     this.player = this.game.add.sprite(30, 30, 'player'); //Spieler erstellen, Startposition, Name
-	
 	//physics on player
     
     //Beschäftigt den Hauptthreat, damit der Nebenthreat solange das Spritesheet laden kann und der Spieler
     //nicht durch die Welt fällt!
-    var wait, t;
-    for(wait=0;wait<10000000;wait++) t=2*3*4;
+ //   var wait, t;
+ //   for(wait=0;wait<10000000;wait++) t=2*3*4;
 
     this.game.physics.arcade.enable(this.player);
 
@@ -78,6 +78,7 @@ SBP.Game.prototype = {
 	this.player.body.bounce.y = 0.2; //bei Aufprall zurückbouncen ... ist ja nen Blob!
 	this.player.body.bounce.x = 0.2;
     this.player.body.gravity.y = 700;
+
 	
 	/*var enemy1;
 	this.enemy1 = this.game.add.sprite(600, 900, 'dude');
@@ -135,6 +136,8 @@ SBP.Game.prototype = {
 	  this.player.animations.add('left', [0,1,2,3,4], 5, true); // Lauf-Animation
 	  this.player.animations.add('right', [5,6,7,8,9], 5, true);
 	  this.player.animations.add('stay', [10,11,12,13], 5, true);
+	  this.player.animations.add('eat',[15,16,17,18,19,18,17,16,15], 5, false);
+
 
     //InputParameter
 	  this.cursors = this.game.input.keyboard.createCursorKeys(); //Pfeiltasten aktivieren
@@ -294,11 +297,17 @@ SBP.Game.prototype = {
 		this.game.debug.text(this.text, 20, 250, "#00ff00", "48px Courier");
 		this.game.debug.bodyInfo(this.player, 16, 24);
     },
-	
 	collectBean: function (player, bean) {
     // Entfernt die Bohne aus der Map und Bohnenzähler hochsetzen
+    this.player.animations.play('eat');
+
+    console.log("Animation läuft!");
     bean.kill();
-	this.count++;
+	this.count++;	
+    
+
+
+
   },
   
     
@@ -330,6 +339,7 @@ SBP.Game.prototype = {
   
   hitDeadly: function(player) {
   	this.player.kill();
+  	this.counter = 0;
   	this.gameOver();
   	this.death.play();
   },
