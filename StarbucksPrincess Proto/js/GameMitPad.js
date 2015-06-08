@@ -226,17 +226,18 @@ SBP.GameMitPad.prototype = {
 	//  Reset the players velocity (movement)
     this.player.body.velocity.x = 0; //sorgt dafür das nach Loslassen der Pfeiltasten die Spielfigur stehen bleibt
 	this.player.animations.play('stay');
+	var maxSpeed = 250;
 	
 	if (this.gamepad) {
 		if (this.gamepad.buttons[15].pressed) {//rechts
-		  this.player.body.velocity.x = +250; 
+		  this.player.body.velocity.x = +maxSpeed; 
 		  this.player.animations.play('right');
 		   if(!this.walk.isPlaying && this.player.body.onFloor())
 			this.walk.play();
 		}
 		
 		if (this.gamepad.buttons[14].pressed) {//links
-		  this.player.body.velocity.x = -250; 
+		  this.player.body.velocity.x = -maxSpeed; 
 		  this.player.animations.play('left');
 		  if(!this.walk.isPlaying && this.player.body.onFloor())
 			this.walk.play();
@@ -260,7 +261,7 @@ SBP.GameMitPad.prototype = {
         this.game.debug.text(this.game.time.fps || '--', 20, 70, "#00ff00", "40px Courier");  
 		this.game.debug.text("collected beans: " + this.count, 150, 70, "#00ff00", "40px Courier"); //Bohnenzähler
 		this.game.debug.text(this.text, 20, 250, "#00ff00", "48px Courier");
-		this.game.debug.bodyInfo(this.player, 16, 24);
+		//this.game.debug.bodyInfo(this.player, 16, 24);
     },
 	
 	collectBean: function (player, bean) {

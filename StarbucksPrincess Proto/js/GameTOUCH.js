@@ -28,7 +28,8 @@ SBP.GameTOUCH.prototype = {
 	this.map.setCollisionBetween(1, 25);
 
 	  this.game.physics.arcade.setBoundsToWorld(true, true, true, true, false);
-	  this.load.atlas('dpad', 'assets/joystick/dpad.png', 'assets/joystick/dpad.json');
+	 //this.game.load.script('dpad', 'js/phaser-virtual-joystick.min.js');
+	 this.load.atlas('dpad', 'assets/joystick/dpad.png', 'assets/joystick/dpad.json');
     },
  
   create: function() {
@@ -131,47 +132,13 @@ SBP.GameTOUCH.prototype = {
     //InputParameter
 	   
 	  this.pad = this.game.plugins.add(Phaser.VirtualJoystick);
-	  this.stick = this.pad.addDPad(0, 0, 200, 'dpad');
-	  this.stick.alignBottomLeft(0);
-	   //  Called when the stick is no longer being used
-        this.stick.onDown.add(this.startSub, this);
-
-        //  Only called when the stick MOVES
-        // this.stick.onMove.add(this.moveSub, this);
-
-        //  Called constantly while the stick is active
-        this.stick.onUpdate.add(this.moveSub, this);
-
-        //  Called when the stick is no longer being used
-        this.stick.onUp.add(this.stopSub, this);	  
+	  this.stick = this.pad.addDPad(100, 500, 200, 'dpad');
+	  this.buttonA = this.pad.addButton(610, 530, 'dpad', 'button1-up', 'button1-down');
+      this.buttonB = this.pad.addButton(745, 460, 'dpad', 'button2-up', 'button2-down');
 	
  }, 
  
- startSub: function () {
-
-        this.player.alpha = 1;
-
-    },
-
-    moveSub: function (stick, force, forceX, forceY) {
-
-        this.player.body.velocity.x = this.stick.forceX * 200;
-        this.player.body.velocity.y = this.stick.forceY * 120;
-
-        if (this.player.y < 116)
-        {
-            this.player.y = 116;
-        }
-
-    },
-
-    stopSub: function () {
-
-        this.player.body.velocity.set(0);
-        this.player.alpha = 0.5;
-
-    },
-  
+ 
   findObjectsByType: function(type, map, layerName) {
  
     var result = new Array();
@@ -260,17 +227,14 @@ SBP.GameTOUCH.prototype = {
 	this.game.physics.arcade.overlap(this.player, this.bean, this.collectBean, null, this);
     this.game.physics.arcade.overlap(this.player, this.mahlwerk, this.hitDanger, null, this);
 	
-	//  Reset the players velocity (movement)
-    this.player.body.velocity.x = 0; //sorgt dafür das nach Loslassen der Pfeiltasten die Spielfigur stehen bleibt
 	var maxSpeed = 250;
-	/*
+	
 	if (this.stick.isDown){
 		this.player.body.velocity.set = 0;
-	
-	
+		
 		if (this.stick.direction === Phaser.LEFT){
 			//  Move to the left
-			this.player.body.velocity.x = -this.maxSpeed;
+			this.player.body.velocity.x = -maxSpeed;
 			this.player.animations.play('left');
 			if(!this.walk.isPlaying && this.player.body.onFloor())
 				this.walk.play();
@@ -278,25 +242,28 @@ SBP.GameTOUCH.prototype = {
 		else if (this.stick.direction === Phaser.RIGHT)
 		{
 			//  Move to the right
-			this.player.body.velocity.x = +this.maxSpeed;
+			this.player.body.velocity.x = +maxSpeed;
 			this.player.animations.play('right');
 			if(!this.walk.isPlaying && this.player.body.onFloor())
 				this.walk.play();
-		}
-		
-		//Sprung
-		else if (this.stick.direction === Phaser.UP && this.player.body.onFloor())
-		{
-			this.player.body.velocity.y = -400;
-			this.jump.play();
 		}
 	
 	}
 	else
 	{
-		this.player.body.velocity.set(0);
 		this.player.animations.play('stay');
-	}*/
+		this.player.body.velocity.x = 0; //sorgt dafür das nach Loslassen der Pfeiltasten die Spielfigur stehen bleibt
+	}
+	
+	if(this.buttonA.isDown && this.player.body.onFloor()){
+		this.player.body.velocity.y = -400;
+		this.jump.play();
+	}
+	
+	if(this.buttonB.isDown){
+		this.fireBean()
+	}
+	
  },
 
 
@@ -306,7 +273,7 @@ SBP.GameTOUCH.prototype = {
         this.game.debug.text(this.game.time.fps || '--', 20, 70, "#00ff00", "40px Courier");  
 		this.game.debug.text("collected beans: " + this.count, 150, 70, "#00ff00", "40px Courier"); //Bohnenzähler
 		this.game.debug.text(this.text, 20, 250, "#00ff00", "48px Courier");
-		this.game.debug.bodyInfo(this.player, 16, 24);
+		//this.game.debug.bodyInfo(this.player, 16, 24);
     },
 	
 	collectBean: function (player, bean) {
@@ -326,7 +293,7 @@ SBP.GameTOUCH.prototype = {
 			if (this.fBean)
 				{
 				 this.fBean.reset(this.player.x+15, this.player.y+15);
-				 if(leftKey.isDown)
+				 if(this.stick.direction === Phaser.LEFT)
 					this.fBean.body.velocity.x = -400;
 				 else
 					this.fBean.body.velocity.x = +400;
