@@ -124,57 +124,8 @@ SBP.GameMitPad.prototype = {
 	  this.player.animations.add('right', [5,6,7,8,9], 5, true);
 	  this.player.animations.add('stay', [10,11,12,13], 5, true);
 
-    //InputParameter
-	 
-	  this.game.input.gamepad.start();
-	  this.pad = this.game.input.gamepad.pad1;
-	 // this.pad.addCallbacks(this, { onConnect: this.addButtons });
-	 
-	console.log("Gamepadsupport", this.game.input.gamepad.supported);
-	console.log("Gamepad aktiv", this.game.input.gamepad.active);
-	console.log("Gamepad connected", this.game.input.gamepad.pad1.connected)
- },
- 
- /* addButtons: function(){
-	  this.upKey = this.pad.getButton(Phaser.Gamepad.XBOX360_A);
-      //this.downKey = this.game.input.pad.getButton(Phaser.Gamepad.XBOX360_DPAD_DOWN);
-      this.leftKey = this.pad.getButton(Phaser.Gamepad.XBOX360_DPAD_LEFT);
-      this.rightKey = this.pad.getButton(Phaser.Gamepad.XBOX360_DPAD_RIGHT);
-	  this.fireKey = this.pad.getButton(Phaser.Gamepad.XBOX360_B);
-	  
-	  this.upKey.onDown.add(this.onDown, this);
-      this.fireKey.onDown.add(this.onDown, this);
-	  this.leftKey.onDown.add(this.onDown, this);
-      this.rightKey.onDown.add(this.onDown, this);
-  },
-  
-  onDown: function(button, value){
-	  if (button.buttonCode === Phaser.Gamepad.XBOX360_A)
-    {
-        this.player.body.velocity.y = -400;
-		this.jump.play();
-    }
-    else if (button.buttonCode === Phaser.Gamepad.XBOX360_B)
-    {
-        this.fireBean();
-    }
-    else if (button.buttonCode === Phaser.Gamepad.XBOX360_LEFT)
-    {
-        this.player.body.velocity.y = -250;
-        this.player.animations.play('left');
-		if(!this.walk.isPlaying && this.player.body.onFloor())
-			this.walk.play();
-    }
-    else if (button.buttonCode === Phaser.Gamepad.XBOX360_RIGHT)
-    {
-         this.player.body.velocity.y = +250;
-        this.player.animations.play('right');
-		if(!this.walk.isPlaying && this.player.body.onFloor())
-			this.walk.play();
-    }
-	  
-  },*/
-  
+   
+ },  
   
   findObjectsByType: function(type, map, layerName) {
  
@@ -263,72 +214,43 @@ SBP.GameMitPad.prototype = {
 	this.game.physics.arcade.overlap(this.player, this.enemy, this.hitDanger, null, this);
 	this.game.physics.arcade.overlap(this.player, this.bean, this.collectBean, null, this);
     this.game.physics.arcade.overlap(this.player, this.mahlwerk, this.hitDanger, null, this);
+	var gamepads;
+	var gamepad;
 
+	  if (navigator.getGamepads) {
+		this.gamepads = navigator.getGamepads();
+		if(this.gamepads) {
+		  this.gamepad = this.gamepads[0];
+		}
+  }
 	//  Reset the players velocity (movement)
-    //this.player.body.velocity.x = 0; //sorgt dafür das nach Loslassen der Pfeiltasten die Spielfigur stehen bleibt
+    this.player.body.velocity.x = 0; //sorgt dafür das nach Loslassen der Pfeiltasten die Spielfigur stehen bleibt
+	this.player.animations.play('stay');
 	
-	 if (this.pad.isDown(Phaser.Gamepad.XBOX360_DPAD_LEFT) || this.pad.axis(Phaser.Gamepad.XBOX360_STICK_LEFT_X) < -0.1)
-    {
-        this.player.x--;
-    }
-    if (this.game.input.gamepad.isDown(Phaser.Gamepad.XBOX360_DPAD_RIGHT))
-    {
-        this.player.x++;
-    }
-    if (this.pad.isDown(Phaser.Gamepad.XBOX360_DPAD_UP) || this.pad.axis(Phaser.Gamepad.XBOX360_STICK_LEFT_Y) < -0.1)
-    {
-        this.player.y--;
-    }
-    if (this.pad.isDown(Phaser.Gamepad.XBOX360_DPAD_DOWN) || this.pad.axis(Phaser.Gamepad.XBOX360_STICK_LEFT_Y) > 0.1)
-    {
-        this.player.y++;
-    }
-    if (this.game.input.gamepad.isDown(Phaser.Gamepad.XBOX360_A))
-    {
-        this.fireBean();
-    }
-    if (this.pad.justReleased(Phaser.Gamepad.XBOX360_B))
-    {
-        this.player.scale.x += 0.01;
-        this.player.scale.y = sprite.scale.x;
-    }
-	
-	/*if (this.pad.isDown(Phaser.Gamepad.XBOX360_DPAD_LEFT))
-    {
-        //  Move to the left
-        this.player.body.velocity.y = -250;
-        this.player.animations.play('left');
-		if(!this.walk.isPlaying && this.player.body.onFloor())
+	if (this.gamepad) {
+		if (this.gamepad.buttons[15].pressed) {//rechts
+		  this.player.body.velocity.x = +250; 
+		  this.player.animations.play('right');
+		   if(!this.walk.isPlaying && this.player.body.onFloor())
 			this.walk.play();
-    }
-	
-    else if (this.rightKey.isDown)
-    {
-        //  Move to the right
-        this.player.body.velocity.y = +250;
-        this.player.animations.play('right');
-		if(!this.walk.isPlaying && this.player.body.onFloor())
-			this.walk.play();
-    }
+		}
 		
-    else
-    {
-        //  Stand still
-        this.player.animations.play('stay');
-    }
-	
-		//Sprung
-	if (this.pad.isDown(Phaser.Gamepad.XBOX360_DPAD_A) < -0.1 && this.player.body.onFloor())
-	{
-		this.player.body.velocity.y = -400;
-		this.jump.play();
-	}
-	
-	if (this.pad.isDown(Phaser.Gamepad.XBOX360_DPAD_B) < -0.1)
-	{
-		this.fireBean();
-	}*/
-	
+		if (this.gamepad.buttons[14].pressed) {//links
+		  this.player.body.velocity.x = -250; 
+		  this.player.animations.play('left');
+		  if(!this.walk.isPlaying && this.player.body.onFloor())
+			this.walk.play();
+		}
+
+		if (this.gamepad.buttons[1].pressed) {
+		  this.fireBean();
+		}
+		
+		if (this.gamepad.buttons[0].pressed && this.player.body.onFloor()) {
+			this.player.body.velocity.y = -400;
+			this.jump.play();
+		}
+	  }
  },
 
 
@@ -358,7 +280,7 @@ SBP.GameMitPad.prototype = {
 			if (this.fBean)
 				{
 				 this.fBean.reset(this.player.x+15, this.player.y+15);
-				 if(leftKey.isDown)
+				 if(this.gamepad.buttons[14].pressed)
 					this.fBean.body.velocity.x = -400;
 				 else
 					this.fBean.body.velocity.x = +400;
