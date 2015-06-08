@@ -39,7 +39,7 @@ SBP.GameMitPad.prototype = {
 	var count;
 	var beanTime;
 	this.beanTime = 0;
-	this.count=500;
+	this.count=0;
 	this.game.stage.backgroundColor = '#787878';
 	this.game.stage.smoothed = false;
 	// Background Image
@@ -49,7 +49,7 @@ SBP.GameMitPad.prototype = {
     this.createBeans();
     this.createObstacle();
 	this.createEnemys();
- 
+	this.createDeadly();
 
 	//create sounds
 	this.walk = this.game.add.audio('walk');
@@ -88,7 +88,6 @@ SBP.GameMitPad.prototype = {
 	//create shootBean
 	this.shootBean = this.game.add.group();
     this.shootBean.enableBody = true;
-    //this.shootBean.physicsBodyType = Phaser.Physics.ARCADE;
     this.shootBean.createMultiple(1, 'Coffeebean');
 	this.shootBean.setAll('scale.x',.5);
 	this.shootBean.setAll('scale.y',.5);
@@ -101,7 +100,6 @@ SBP.GameMitPad.prototype = {
 	this.deadE = this.game.add.group();
     this.deadE.enableBody = true;
     this.deadE.createMultiple(1, 'dude');
-    //this.deadE.setAll('anchor.x', 0.5);
     this.deadE.setAll('anchor.y', 0.5);
     this.deadE.setAll('outOfBoundsKill', true);
    	this.deadE.setAll.collideWorldBounds = true;
@@ -160,6 +158,15 @@ SBP.GameMitPad.prototype = {
        	this.createFromTiledObject(element, this.bean);
 			}, this);
   	},
+	createDeadly: function() {
+		this.deadly = this.game.add.group();
+		this.deadly.enableBody = true;
+		var result = this.findObjectsByType('deadly',this.map,'Deadly');
+		result.forEach(function(element){
+			this.createFromTiledObject(element, this.deadly);
+		}, this);
+		
+	 },
 	
     createObstacle: function (){
       this.mahlwerk = this.game.add.group();
@@ -214,6 +221,8 @@ SBP.GameMitPad.prototype = {
 	this.game.physics.arcade.overlap(this.player, this.enemy, this.hitDanger, null, this);
 	this.game.physics.arcade.overlap(this.player, this.bean, this.collectBean, null, this);
     this.game.physics.arcade.overlap(this.player, this.mahlwerk, this.hitDanger, null, this);
+	this.game.physics.arcade.overlap(this.player, this.deadly, this.hitDeadly, null, this);
+	
 	var gamepads;
 	var gamepad;
 
@@ -297,6 +306,13 @@ SBP.GameMitPad.prototype = {
 	}
   },
   
+  hitDeadly: function(player) {
+  	this.player.kill();
+  	this.counter = 0;
+  	this.gameOver();
+  	this.death.play();
+  },
+  
   hitDanger: function(player, danger) {
 	  //Bohne verlieren und erschrockenes Wegbouncen
   	this.looseBean();
@@ -359,10 +375,13 @@ enemyMove: function(enemy){
  
  gameOver: function(){
 	 this.text="Du bist total kaputt!!!";
-	 
- }
+	 this.reloadButton = this.game.add.button(400,370,"reload",this.neustart,this);
+	 this.reloadButton.scale.set(0.5);
+ },
  
-
+ neustart: function(){
+	 this.state.start('GameMitPad');
+ }
  
 
  

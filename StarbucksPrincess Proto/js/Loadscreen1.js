@@ -6,7 +6,6 @@ SBP.Menu.prototype = {
  
   create: function() {
 	  
-  console.log("blabla");
   var gameTitle;
   var playButton;
   this.gameTitle = this.game.add.text(this.game.world.centerX, this.game.world.centerY, "Startscreen");

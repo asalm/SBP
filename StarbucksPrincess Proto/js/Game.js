@@ -37,7 +37,6 @@ SBP.Game.prototype = {
 	var cursors;
 	var text;
 	this.text = "";
-	//var count;
 	var beanTime;
 	this.beanTime = 0;
 	this.count=50;
@@ -79,15 +78,6 @@ SBP.Game.prototype = {
 	this.player.body.bounce.x = 0.2;
     this.player.body.gravity.y = 700;
 
-	
-	/*var enemy1;
-	this.enemy1 = this.game.add.sprite(600, 900, 'dude');
-	this.game.physics.arcade.enable(this.enemy1);
-	this.enemy1.body.gravity.y = 700;
-	this.enemy1.body.collideWorldBounds = true;
-	this.enemy1.animations.add('left', [0,1,2,3], 10, true); // Lauf-Animation
-	this.enemy1.animations.add('right', [5,6,7,8], 10, true);*/
-
 	//create lostBean
 	this.lostBean = this.game.add.group();
     this.lostBean.enableBody = true;
@@ -99,10 +89,7 @@ SBP.Game.prototype = {
 	//create shootBean
 	this.shootBean = this.game.add.group();
     this.shootBean.enableBody = true;
-    //this.shootBean.physicsBodyType = Phaser.Physics.ARCADE;
     this.shootBean.createMultiple(1, 'Coffeebean');
-	//this.shootBean.setAll('angle', +45); // or .angle = 45;
-	//this.shootBean.setAll('cacheAsBitmap',true); 
 	this.shootBean.setAll('scale.x',.5);
 	this.shootBean.setAll('scale.y',.5);
 	this.shootBean.setAll('body.tilePadding.x', 16);
@@ -406,11 +393,13 @@ enemyMove: function(enemy){
  
  gameOver: function(){
 	 this.text="Du bist total kaputt!!!";
-	 
+	 this.reloadButton = this.game.add.button(400,370,"reload",this.neustart,this);
+	 this.reloadButton.scale.set(0.5);
+ },
+ 
+ neustart: function(){
+	 this.state.start('Game');
  }
- 
-
- 
 
  
 };
