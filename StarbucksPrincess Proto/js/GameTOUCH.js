@@ -40,7 +40,7 @@ SBP.GameTOUCH.prototype = {
 	var count;
 	var beanTime;
 	this.beanTime = 0;
-	this.count=500;
+	this.count=0;
 	this.game.stage.backgroundColor = '#787878';
 	this.game.stage.smoothed = false;
 	// Background Image
@@ -383,7 +383,7 @@ enemyMove: function(enemy){
  
  gameOver: function(){
 	 this.text="Du bist total kaputt!!!";
-	 this.reloadButton = this.game.add.button(400,370,"reload",this.neustart,this);
+	 this.reloadButton = this.game.add.button(this.game.world.centerX, this.game.world.centerY,"reload",this.neustart,this);
 	 this.reloadButton.scale.set(0.5);
  },
  

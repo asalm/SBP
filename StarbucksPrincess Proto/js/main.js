@@ -1,6 +1,6 @@
 var SBP = SBP || {};
  
-SBP.game = new Phaser.Game(1024, 768, Phaser.ScaleManager, 'StarBucksPrincess');
+SBP.game = new Phaser.Game(800, 600, Phaser.AUTO, 'StarBucksPrincess');
 
  
 SBP.game.state.add('Boot', SBP.Boot);

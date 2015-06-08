@@ -375,7 +375,8 @@ enemyMove: function(enemy){
  
  gameOver: function(){
 	 this.text="Du bist total kaputt!!!";
-	 this.reloadButton = this.game.add.button(400,370,"reload",this.neustart,this);
+	 this.reloadButton = this.game.add.button(this.game.width/2, this.game.height/2,"reload",this.neustart,this);
+	 this.reloadButton.anchor
 	 this.reloadButton.scale.set(0.5);
  },
  

@@ -39,7 +39,7 @@ SBP.Game.prototype = {
 	this.text = "";
 	var beanTime;
 	this.beanTime = 0;
-	this.count=50;
+	this.count=0;
 	this.game.stage.backgroundColor = '#787878';
 
 	// Background Image

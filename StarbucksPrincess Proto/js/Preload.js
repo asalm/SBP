@@ -14,8 +14,7 @@ SBP.Preload.prototype = {
     this.preloadBar.scale.setTo(0.5);
 
     this.load.setPreloadSprite(this.preloadBar);
-   //this.load.atlas('dpad', 'assets/joystick/dpad.png', 'assets/joystick/dpad.json');
-	//this.game.load.script('dpad', 'phaser-virtual-joystick.min.js');
+  
   //load game assets
   
   //Preload Bar
