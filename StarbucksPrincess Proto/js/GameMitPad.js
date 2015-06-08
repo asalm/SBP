@@ -27,7 +27,6 @@ SBP.GameMitPad.prototype = {
     //collision on blockedLayer
 	this.map.setCollisionBetween(1, 25);
 	
-
 	  this.game.physics.arcade.setBoundsToWorld(true, true, true, true, false);
     },
  
@@ -136,7 +135,7 @@ SBP.GameMitPad.prototype = {
 	console.log("Gamepad connected", this.game.input.gamepad.pad1.connected)
  },
  
-  addButtons: function(){
+ /* addButtons: function(){
 	  this.upKey = this.pad.getButton(Phaser.Gamepad.XBOX360_A);
       //this.downKey = this.game.input.pad.getButton(Phaser.Gamepad.XBOX360_DPAD_DOWN);
       this.leftKey = this.pad.getButton(Phaser.Gamepad.XBOX360_DPAD_LEFT);
@@ -174,7 +173,7 @@ SBP.GameMitPad.prototype = {
 			this.walk.play();
     }
 	  
-  },
+  },*/
   
   
   findObjectsByType: function(type, map, layerName) {
@@ -264,7 +263,7 @@ SBP.GameMitPad.prototype = {
 	this.game.physics.arcade.overlap(this.player, this.enemy, this.hitDanger, null, this);
 	this.game.physics.arcade.overlap(this.player, this.bean, this.collectBean, null, this);
     this.game.physics.arcade.overlap(this.player, this.mahlwerk, this.hitDanger, null, this);
-	
+
 	//  Reset the players velocity (movement)
     //this.player.body.velocity.x = 0; //sorgt dafür das nach Loslassen der Pfeiltasten die Spielfigur stehen bleibt
 	

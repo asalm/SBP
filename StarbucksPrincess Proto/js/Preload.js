@@ -15,7 +15,7 @@ SBP.Preload.prototype = {
 
     this.load.setPreloadSprite(this.preloadBar);
    
-
+	this.game.load.script('dpad', 'js/phaser-virtual-joystick.min.js');
   //load game assets
   
   //Preload Bar
