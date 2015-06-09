@@ -12,7 +12,7 @@ SBP.Game.prototype = {
 
  
     //the first parameter is the tileset name as specified in Tiled, the second is the key to the asset
-	this.game.add.tileSprite(0, 0,1200,800, 'background');
+	this.game.add.tileSprite(0, 0,2400,800, 'background');
 	//this.background.tileScale(200,200);
     this.map.addTilesetImage('World', 'gameTiles');
  
@@ -21,18 +21,19 @@ SBP.Game.prototype = {
     this.walk = this.map.createLayer('Walk');
     this.blockedLayer = this.map.createLayer('BlockedLayer');
 
+
  
     //resizes the game world to match the layer dimensions
     this.blockedLayer.resizeWorld();
 	this.blockedLayer.smoothed = false;
     //collision on blockedLayer
-	this.map.setCollisionBetween(1, 25);
+	this.map.setCollisionBetween(1, 200);
 
 	  this.game.physics.arcade.setBoundsToWorld(true, true, true, true, false);
     },
  
   create: function() {
-	var eat;
+
 	var map;
 	var cursors;
 	var text;
@@ -63,7 +64,9 @@ SBP.Game.prototype = {
 
     //create player
  
-    this.player = this.game.add.sprite(30, 30, 'player'); //Spieler erstellen, Startposition, Name
+    this.player = this.game.add.sprite(120, 1300, 'player'); //Spieler erstellen, Startposition, Name
+	
+    this.Overlay = this.map.createLayer('Overlay');
 	//physics on player
     
     //Beschäftigt den Hauptthreat, damit der Nebenthreat solange das Spritesheet laden kann und der Spieler
@@ -123,7 +126,7 @@ SBP.Game.prototype = {
 	  this.player.animations.add('left', [0,1,2,3,4], 5, true); // Lauf-Animation
 	  this.player.animations.add('right', [5,6,7,8,9], 5, true);
 	  this.player.animations.add('stay', [10,11,12,13], 5, true);
-	  this.eat = this.player.animations.add('eat',[15,16,17,18,19],5,false);
+	  this.player.animations.add('eat',[15,16,17,18,19,18,17,16,15], 5, false);
 
 
 
@@ -231,7 +234,7 @@ SBP.Game.prototype = {
   },
 
   update: function() {
-	this.game.physics.arcade.TILE_BIAS = 50;
+	this.game.physics.arcade.TILE_BIAS = 200;
   	this.game.physics.arcade.collide(this.player, this.blockedLayer); //Kollision mit Layer
   	this.game.physics.arcade.overlap(this.player, this.blockedLayer); //Kollision mit Layer
 	this.game.physics.arcade.collide(this.enemy, this.blockedLayer, this.enemyMove); //Kollision mit Layer
@@ -260,7 +263,6 @@ SBP.Game.prototype = {
         //  Move to the right
         this.player.body.velocity.x = +maxSpeed;
         this.player.animations.play('right');
-		
 		if(!this.walk.isPlaying && this.player.body.onFloor())
 			this.walk.play();
     }
@@ -295,18 +297,14 @@ SBP.Game.prototype = {
     },
 
 	collectBean: function (player, bean) {
-		// Entfernt die Bohne aus der Map und Bohnenzähler hochsetzen
-		//player.animations.play('eat');
-		this.eat.play(5, false);
-		this.eat.onComplete.add( 
-		function killBean(bean){
-		console.log("ANIMATIOOOOOOON!!");
-		bean.kill();
-		this.count++;	}
-	);
-	bean.kill();
-	this.count++;
-	},
+    // Entfernt die Bohne aus der Map und Bohnenzähler hochsetzen
+    this.player.animations.play('eat');
+
+    console.log("Animation läuft!");
+    bean.kill();
+	this.count++;	
+    
+  	},
   
     
   fireBean: function(){
@@ -373,7 +371,6 @@ SBP.Game.prototype = {
  
  collisionHandler: function(fBean){
 	 fBean.kill();
-	 
  },
  
  
@@ -405,7 +402,7 @@ enemyMove: function(enemy){
  
  gameOver: function(){
 	 this.text="Du bist total kaputt!!!";
-	 this.reloadButton = this.game.add.button(this.game.world.centerX, this.game.world.centerY,"reload",this.neustart,this);
+	 this.reloadButton = this.game.add.button(400,370,"reload",this.neustart,this);
 	 this.reloadButton.scale.set(0.5);
  },
  
