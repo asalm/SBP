@@ -30,7 +30,7 @@ SBP.Preload.prototype = {
   //Tileset
     this.load.image('gameTiles', 'assets/tileset/tilemap.png');
   //Bohne sprite
-    this.load.image('Coffeebean', 'assets/images/bohne.png');
+    this.load.spritesheet('Coffeebean', 'assets/images/bohne.png', 24, 24);
   //Mahlwerk sprite
     this.load.image('Mahlwerk', 'assets/images/Mahlwerk.png');
   //Deadly sprite

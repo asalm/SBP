@@ -29,7 +29,7 @@ SBP.Boot.prototype = {
  
     //screen size will be set automatically
  
-    this.scale.setScreenSize(true);
+    //this.scale.setScreenSize(true);
  
     //physics system
  

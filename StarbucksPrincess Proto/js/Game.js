@@ -126,6 +126,8 @@ SBP.Game.prototype = {
 	  this.player.animations.add('eat',[15,16,17,18,19,18,17,16,15], 5, false);
 
 
+
+
     //InputParameter
 	  this.cursors = this.game.input.keyboard.createCursorKeys(); //Pfeiltasten aktivieren
 	  upKey = this.game.input.keyboard.addKey(Phaser.Keyboard.UP);
@@ -164,12 +166,17 @@ SBP.Game.prototype = {
  
   },
    createBeans: function() {
+
      	this.bean = this.game.add.group();
      	this.bean.enableBody = true;
      	var result = this.findObjectsByType('bohne', this.map, 'Bean');
      	result.forEach(function(element){
        	this.createFromTiledObject(element, this.bean);
 			}, this);
+     	this.game.physics.arcade.enable(this.bean);
+       	this.bean.callAll('animations.add', 'animations','rotate', [0,1,2,3,4], 10, true);
+	    this.bean.callAll('play', null, 'rotate');
+
   	},
 	createDeadly: function() {
 		this.deadly = this.game.add.group();
@@ -239,6 +246,7 @@ SBP.Game.prototype = {
     this.player.body.velocity.x = 0; //sorgt dafür das nach Loslassen der Pfeiltasten die Spielfigur stehen bleibt
 	var maxSpeed = 250;
 	
+
 	if (leftKey.isDown)
     {
         //  Move to the left
@@ -284,6 +292,7 @@ SBP.Game.prototype = {
 		this.game.debug.text(this.text, 20, 250, "#00ff00", "48px Courier");
 		//this.game.debug.bodyInfo(this.player, 16, 24);
     },
+
 	collectBean: function (player, bean) {
     // Entfernt die Bohne aus der Map und Bohnenzähler hochsetzen
     this.player.animations.play('eat');
@@ -292,10 +301,7 @@ SBP.Game.prototype = {
     bean.kill();
 	this.count++;	
     
-
-
-
-  },
+  	},
   
     
   fireBean: function(){
