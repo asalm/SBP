@@ -77,8 +77,12 @@ SBP.Game.prototype = {
  //   for(wait=0;wait<10000000;wait++) t=2*3*4;
 
     this.game.physics.arcade.enable(this.player);
-
+    this.game.physics.arcade.enable(this.boss);
+    this.boss.enableBody = true;
     //player gravity
+    this.boss.body.bounce.y = 0.2;
+    this.boss.body.bounce.x = 0.2;
+    this.boss.body.gravity.y = 400;
 	this.player.body.bounce.y = 0.2; //bei Aufprall zurückbouncen ... ist ja nen Blob!
 	this.player.body.bounce.x = 0.2;
     this.player.body.gravity.y = 700;
@@ -114,7 +118,7 @@ SBP.Game.prototype = {
     //Camera-Movement
     this.game.camera.follow(this.player);
     this.player.body.collideWorldBounds = true; //Kollision des Spielers
-	
+	//this.boss.body.collideWorldBounds = true;
 
     //  By default the ship will collide with the World bounds,
     //  however because you have changed the size of the world (via layer.resizeWorld) to match the tilemap
@@ -239,6 +243,7 @@ SBP.Game.prototype = {
 	this.game.physics.arcade.TILE_BIAS = 200;
   	this.game.physics.arcade.collide(this.player, this.blockedLayer); //Kollision mit Layer
   	this.game.physics.arcade.overlap(this.player, this.blockedLayer); //Kollision mit Layer
+  	this.game.physics.arcade.collide(this.player, this.boss);
 	this.game.physics.arcade.collide(this.enemy, this.blockedLayer, this.enemyMove); //Kollision mit Layer
 	this.game.physics.arcade.overlap(this.fBean, this.blockedLayer, this.collisionHandler, null, this);
 	this.game.physics.arcade.collide(this.fBean, this.enemy, this.collisionHandlerEnemy);
@@ -246,6 +251,7 @@ SBP.Game.prototype = {
 	this.game.physics.arcade.overlap(this.player, this.bean, this.collectBean, null, this);
     this.game.physics.arcade.overlap(this.player, this.mahlwerk, this.hitDanger, null, this);
     this.game.physics.arcade.overlap(this.player, this.deadly, this.hitDeadly, null, this);
+    this.game.physics.arcade.collide(this.boss, this.blockedLayer);
 	
 	//  Reset the players velocity (movement)
     this.player.body.velocity.x = 0; //sorgt dafür das nach Loslassen der Pfeiltasten die Spielfigur stehen bleibt
@@ -284,6 +290,18 @@ SBP.Game.prototype = {
 	if (fireKey.isDown)
 	{
 		this.fireBean();
+	}
+	if(this.boss.body.blocked.left){
+	  this.boss.body.velocity.x = +60;
+	}
+	if(this.boss.body.blocked.right){
+	 this.boss.body.velocity.x = -60;
+	}
+	if(this.boss.body.onFloor()){
+		this.boss.body.gravity.y = -800;
+	}
+	if(this.boss.body.blocked.top){
+		this.boss.body.gravity.y = +1200;
 	}
 	
  },
