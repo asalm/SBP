@@ -64,8 +64,10 @@ SBP.Game.prototype = {
 
     //create player
  
-    this.player = this.game.add.sprite(120, 1300, 'player'); //Spieler erstellen, Startposition, Name
+    this.player = this.game.add.sprite(600, 2250, 'player'); //Spieler erstellen, Startposition, Name
 	
+	this.boss = this.game.add.sprite(700,2200, 'boss');
+
     this.Overlay = this.map.createLayer('Overlay');
 	//physics on player
     
