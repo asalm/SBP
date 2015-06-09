@@ -32,7 +32,7 @@ SBP.Game.prototype = {
     },
  
   create: function() {
-
+	var eat;
 	var map;
 	var cursors;
 	var text;
@@ -123,7 +123,7 @@ SBP.Game.prototype = {
 	  this.player.animations.add('left', [0,1,2,3,4], 5, true); // Lauf-Animation
 	  this.player.animations.add('right', [5,6,7,8,9], 5, true);
 	  this.player.animations.add('stay', [10,11,12,13], 5, true);
-	  this.player.animations.add('eat',[15,16,17,18,19,18,17,16,15], 5, false);
+	  this.eat = this.player.animations.add('eat',[15,16,17,18,19],5,false);
 
 
 
@@ -260,6 +260,7 @@ SBP.Game.prototype = {
         //  Move to the right
         this.player.body.velocity.x = +maxSpeed;
         this.player.animations.play('right');
+		
 		if(!this.walk.isPlaying && this.player.body.onFloor())
 			this.walk.play();
     }
@@ -294,14 +295,18 @@ SBP.Game.prototype = {
     },
 
 	collectBean: function (player, bean) {
-    // Entfernt die Bohne aus der Map und Bohnenzähler hochsetzen
-    this.player.animations.play('eat');
-
-    console.log("Animation läuft!");
-    bean.kill();
-	this.count++;	
-    
-  	},
+		// Entfernt die Bohne aus der Map und Bohnenzähler hochsetzen
+		//player.animations.play('eat');
+		this.eat.play(5, false);
+		this.eat.onComplete.add( 
+		function killBean(bean){
+		console.log("ANIMATIOOOOOOON!!");
+		bean.kill();
+		this.count++;	}
+	);
+	bean.kill();
+	this.count++;
+	},
   
     
   fireBean: function(){
@@ -368,6 +373,7 @@ SBP.Game.prototype = {
  
  collisionHandler: function(fBean){
 	 fBean.kill();
+	 
  },
  
  
@@ -399,7 +405,7 @@ enemyMove: function(enemy){
  
  gameOver: function(){
 	 this.text="Du bist total kaputt!!!";
-	 this.reloadButton = this.game.add.button(400,370,"reload",this.neustart,this);
+	 this.reloadButton = this.game.add.button(this.game.world.centerX, this.game.world.centerY,"reload",this.neustart,this);
 	 this.reloadButton.scale.set(0.5);
  },
  
