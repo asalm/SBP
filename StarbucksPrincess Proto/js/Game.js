@@ -291,7 +291,7 @@ SBP.Game.prototype = {
 	{
 		this.fireBean();
 	}
-	if(this.boss.body.blocked.left){
+	/*if(this.boss.body.blocked.left){
 	  this.boss.body.velocity.x = +60;
 	}
 	if(this.boss.body.blocked.right){
@@ -302,7 +302,9 @@ SBP.Game.prototype = {
 	}
 	if(this.boss.body.blocked.top){
 		this.boss.body.gravity.y = +1200;
-	}
+	}*/
+	
+	this.bossFight();
 	
  },
 
@@ -314,6 +316,7 @@ SBP.Game.prototype = {
 		this.game.debug.text("collected beans: " + this.count, 150, 70, "#00ff00", "40px Courier"); //Bohnenzähler
 		this.game.debug.text(this.text, 20, 250, "#00ff00", "48px Courier");
 		//this.game.debug.bodyInfo(this.player, 16, 24);
+		this.game.debug.text(this.game.time.now, 20, 250, "#00ff00", "48px Courier");
     },
 
 	collectBean: function (player, bean) {
@@ -417,6 +420,28 @@ enemyMove: function(enemy){
 	}
 	
 },
+
+bossFight: function(){
+	//part1, part 2, part3
+	//part1: doofes rumtanzen
+	//part2 body attack auf spieler
+	//part1
+	//part3 gezieltes schießen
+	//part1
+	//part4 body attack
+	//part5 sternschuss 10?
+	//loop while boss isAlive
+	
+	 //this.game.add.tween(this.boss).to({ y: 300 }, 2000, Phaser.Easing.Quadratic.InOut, true, 0, 1000, true);
+	  this.fightTimer = this.game.time.now;
+	 while((200 + this.fightTimer) < this.game.time.now){
+	 this.boss.body.velocity.x = +600;
+	  //this.boss.body.velocity.x = -60;
+	 }
+	  
+	 //this.game.physics.arcade.moveToObject(this.boss,this.player,120);
+	  
+},
 	
 
  
@@ -427,6 +452,7 @@ enemyMove: function(enemy){
  },
  
  neustart: function(){
+	
 	 this.state.start('Game');
  }
 
