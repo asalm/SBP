@@ -36,11 +36,12 @@ SBP.Game.prototype = {
 
 	var map;
 	var cursors;
+	this.bosslife = 10;
 	var text;
 	this.text = "";
 	var beanTime;
 	this.beanTime = 0;
-	this.count=0;
+	this.count=25;
 	this.game.stage.backgroundColor = '#787878';
 
 	// Background Image
@@ -61,14 +62,15 @@ SBP.Game.prototype = {
 	this.jump = this.game.add.audio('jump');
 	
 	//this.game.sound.setDecodedCallback([ this.walk, this.hit, this.death, this.shoot ], start, this);
-
     //create player
- 
-    this.player = this.game.add.sprite(600, 2250, 'player'); //Spieler erstellen, Startposition, Name
+ 	this.player = this.game.add.sprite(120,1200,'player');
+    //bossposition// this.player = this.game.add.sprite(600, 2250, 'player'); //Spieler erstellen, Startposition, Name
 	
 	this.boss = this.game.add.sprite(700,2200, 'boss');
+	
+	this.overlay = this.map.createLayer('Overlay');
+    this.overlay.enableBody = true;
 
-    this.Overlay = this.map.createLayer('Overlay');
 	//physics on player
     
     //Beschäftigt den Hauptthreat, damit der Nebenthreat solange das Spritesheet laden kann und der Spieler
@@ -252,6 +254,8 @@ SBP.Game.prototype = {
     this.game.physics.arcade.overlap(this.player, this.mahlwerk, this.hitDanger, null, this);
     this.game.physics.arcade.overlap(this.player, this.deadly, this.hitDeadly, null, this);
     this.game.physics.arcade.collide(this.boss, this.blockedLayer);
+    this.game.physics.arcade.collide(this.fBean, this.boss, this.bossbeanCollision, null, this);
+    this.game.physics.arcade.overlap(this.player, this.overlay, this.overlaycollisionHandler, null, this);
 	
 	//  Reset the players velocity (movement)
     this.player.body.velocity.x = 0; //sorgt dafür das nach Loslassen der Pfeiltasten die Spielfigur stehen bleibt
@@ -317,11 +321,12 @@ SBP.Game.prototype = {
 		this.game.debug.text(this.text, 20, 250, "#00ff00", "48px Courier");
 		//this.game.debug.bodyInfo(this.player, 16, 24);
 		this.game.debug.text(this.game.time.now, 20, 250, "#00ff00", "48px Courier");
+		this.game.debug.text(this.bosslife,20,280,"#00ff00","24px Courier");
     },
 
 	collectBean: function (player, bean) {
     // Entfernt die Bohne aus der Map und Bohnenzähler hochsetzen
-    this.player.animations.play('eat');
+    player.animations.play('eat');
 
     console.log("Animation läuft!");
     bean.kill();
@@ -392,10 +397,22 @@ SBP.Game.prototype = {
 	}
   },
  
+ overlaycollisionHandler: function(player, overlay){//overlay, player){
+ 	Console.log("Overlay transparent Junge!")
+ 	this.overlay.alpha = 0.3;
+ },
+
  collisionHandler: function(fBean){
 	 fBean.kill();
  },
- 
+ bossbeanCollision : function(fBean){
+ 	fBean.kill();
+	this.bosslife--;
+
+	if(this.bosslife <= 0){
+		this.boss.kill();
+	}
+},
  
  collisionHandlerEnemy: function(fBean, enemy){
 	 //Bohne weg, Gegner weg
@@ -431,6 +448,9 @@ bossFight: function(){
 	//part4 body attack
 	//part5 sternschuss 10?
 	//loop while boss isAlive
+	var bosslife = 10;
+	// 
+	// 
 	
 	 //this.game.add.tween(this.boss).to({ y: 300 }, 2000, Phaser.Easing.Quadratic.InOut, true, 0, 1000, true);
 	  this.fightTimer = this.game.time.now;
