@@ -12,7 +12,8 @@ SBP.Game.prototype = {
 
  
     //the first parameter is the tileset name as specified in Tiled, the second is the key to the asset
-	this.game.add.tileSprite(0, 0,2400,800, 'background');
+	this.bg = this.game.add.tileSprite(0, 0,640,480, 'background');
+	this.bg.fixedToCamera = true;
 	//this.background.tileScale(200,200);
     this.map.addTilesetImage('World', 'gameTiles');
  
@@ -22,10 +23,11 @@ SBP.Game.prototype = {
     this.blockedLayer = this.map.createLayer('BlockedLayer');
 
 
+
  
     //resizes the game world to match the layer dimensions
     this.blockedLayer.resizeWorld();
-	this.blockedLayer.smoothed = false;
+
     //collision on blockedLayer
 	this.map.setCollisionBetween(1, 200);
 
@@ -63,12 +65,13 @@ SBP.Game.prototype = {
 	
 	//this.game.sound.setDecodedCallback([ this.walk, this.hit, this.death, this.shoot ], start, this);
     //create player
- 	this.player = this.game.add.sprite(120,1200,'player');
+
+ 	this.player = this.game.add.sprite(120,500,'player');
     //bossposition// this.player = this.game.add.sprite(600, 2250, 'player'); //Spieler erstellen, Startposition, Name
 	
 	this.boss = this.game.add.sprite(700,2200, 'boss');
 	
-	this.overlay = this.map.createLayer('Overlay');
+    this.overlay = this.map.createLayer('Overlay');
     this.overlay.enableBody = true;
 
 	//physics on player
@@ -100,7 +103,7 @@ SBP.Game.prototype = {
 	//create shootBean
 	this.shootBean = this.game.add.group();
     this.shootBean.enableBody = true;
-    this.shootBean.createMultiple(1, 'Coffeebean');
+    this.shootBean.createMultiple(5, 'Coffeebean');
 	this.shootBean.setAll('scale.x',.5);
 	this.shootBean.setAll('scale.y',.5);
 	this.shootBean.setAll('body.tilePadding.x', 16);
@@ -185,7 +188,7 @@ SBP.Game.prototype = {
        	this.createFromTiledObject(element, this.bean);
 			}, this);
      	this.game.physics.arcade.enable(this.bean);
-       	this.bean.callAll('animations.add', 'animations','rotate', [0,1,2,3,4], 10, true);
+       	this.bean.callAll('animations.add', 'animations','rotate', [0,1,2,3,4,5,6,7,8,4,3,2,1], 5, true);
 	    this.bean.callAll('play', null, 'rotate');
 
   	},
@@ -261,7 +264,6 @@ SBP.Game.prototype = {
     this.player.body.velocity.x = 0; //sorgt dafür das nach Loslassen der Pfeiltasten die Spielfigur stehen bleibt
 	var maxSpeed = 250;
 	
-
 	if (leftKey.isDown)
     {
         //  Move to the left
@@ -342,6 +344,9 @@ SBP.Game.prototype = {
 			this.fBean = this.shootBean.getFirstExists(false);
 						
 			this.count--;
+
+			this.fBean.enableBody = true;
+
 			if (this.fBean)
 				{
 				 this.fBean.reset(this.player.x+15, this.player.y+15);
@@ -352,7 +357,7 @@ SBP.Game.prototype = {
 				
 				 this.shoot.play();
 				 this.beanTime = this.game.time.now + 200;
-				 this.shootBean.createMultiple(1, 'Coffeebean');
+				 this.shootBean.createMultiple(5, 'Coffeebean');
 				 this.shootBean.setAll('scale.x',.5);
 				 this.shootBean.setAll('scale.y',.5);
 				 this.shootBean.setAll('angle', +45);
@@ -399,7 +404,10 @@ SBP.Game.prototype = {
  
  overlaycollisionHandler: function(player, overlay){//overlay, player){
  	Console.log("Overlay transparent Junge!")
- 	this.overlay.alpha = 0.3;
+ 	overlay.alpha = 0.3;
+ 	overlay.dirty = true;
+
+ 	return false;
  },
 
  collisionHandler: function(fBean){
@@ -467,8 +475,10 @@ bossFight: function(){
  
  gameOver: function(){
 	 this.text="Du bist total kaputt!!!";
-	 this.reloadButton = this.game.add.button(400,370,"reload",this.neustart,this);
-	 this.reloadButton.scale.set(0.5);
+	 this.reloadbutton = this.game.add.button(400,370,"reload",this.neustart,this);
+	 this.reloadbutton.fixedToCamera = true;
+	 //this.reloadButton.scale.x = 0.5;
+	 //this.reloadButton.scale.y = 0.5;
  },
  
  neustart: function(){
