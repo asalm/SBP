@@ -70,6 +70,8 @@ SBP.Game.prototype = {
     //bossposition// this.player = this.game.add.sprite(600, 2250, 'player'); //Spieler erstellen, Startposition, Name
 	
 	this.boss = this.game.add.sprite(700,2200, 'boss');
+	this.boss.animations.add('walk', [0,1,2,3], 5, true);
+
 	
     this.overlay = this.map.createLayer('Overlay');
     this.overlay.enableBody = true;
@@ -456,6 +458,8 @@ bossFight: function(){
 	//part4 body attack
 	//part5 sternschuss 10?
 	//loop while boss isAlive
+	this.boss.animations.play('walk');
+	
 	var bosslife = 10;
 	// 
 	// 
