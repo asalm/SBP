@@ -47,7 +47,14 @@ SBP.Game.prototype = {
 	this.game.stage.backgroundColor = '#787878';
 
 	// Background Image
-
+	this.beanCounter = this.game.add.image(this.game.stage.centerX, this.game.stage.centerY,"beanCounter");
+	this.beanCounter.fixedToCamera = true;
+	this.beanCounter.bringToTop();
+	this.beanCounter.scale.x = 2;
+	this.beanCounter.scale.y = 2;
+	this.beanCounter.anchor.x = -8.8;
+	this.beanCounter.anchor.y = -0.1;
+	
 
     //Erstellt für jedes Object aus der Tiled-Map im ObjectLayer in Objekt im Game
     this.createBeans();
@@ -323,11 +330,12 @@ SBP.Game.prototype = {
  
     { 
         this.game.debug.text(this.game.time.fps || '--', 20, 70, "#00ff00", "40px Courier");  
-		this.game.debug.text("collected beans: " + this.count, 150, 70, "#00ff00", "40px Courier"); //Bohnenzähler
+		this.game.debug.text(this.count, 573, 50, "#ffffff", "36px Courier"); //Bohnenzähler
 		this.game.debug.text(this.text, 20, 250, "#00ff00", "48px Courier");
 		//this.game.debug.bodyInfo(this.player, 16, 24);
 		this.game.debug.text(this.game.time.now, 20, 250, "#00ff00", "48px Courier");
 		this.game.debug.text(this.bosslife,20,280,"#00ff00","24px Courier");
+		
     },
 
 	collectBean: function (player, bean) {
