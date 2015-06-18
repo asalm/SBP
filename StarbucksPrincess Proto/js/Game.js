@@ -48,9 +48,7 @@ SBP.Game.prototype = {
 	this.game.stage.backgroundColor = '#787878';
 
 	// Background Image
-<<<<<<< HEAD
 
-=======
 	this.beanCounter = this.game.add.image(this.game.stage.centerX, this.game.stage.centerY,"beanCounter");
 	this.beanCounter.fixedToCamera = true;
 	this.beanCounter.bringToTop();
@@ -58,7 +56,7 @@ SBP.Game.prototype = {
 	this.beanCounter.scale.y = 2;
 	this.beanCounter.anchor.setTo(-8.8,-0.1);
 		
->>>>>>> origin/master
+
 
     //Erstellt für jedes Object aus der Tiled-Map im ObjectLayer in Objekt im Game
     this.createBeans();
@@ -77,17 +75,12 @@ SBP.Game.prototype = {
 	//this.game.sound.setDecodedCallback([ this.walk, this.hit, this.death, this.shoot ], start, this);
     //create player
 
-<<<<<<< HEAD
- 	this.player = this.game.add.sprite(50,50,'player');
- 	this.player.smoothed = false;
-    //bossposition// this.player = this.game.add.sprite(600, 2250, 'player'); //Spieler erstellen, Startposition, Name
-=======
  	//this.player = this.game.add.sprite(2700,2800,'player');
 	//testposition//
 	this.player = this.game.add.sprite(120,500,'player');	
-	//startposition// this.player = this.game.add.sprite(100,120,'player');
+	//startposition// this.player = this.game.add.sprite(50,50,'player');
     //bossposition// this.player = this.game.add.sprite(2700,2800,'player');; //Spieler erstellen, Startposition, Name
->>>>>>> origin/master
+
 	
 	this.boss = this.game.add.sprite(700,2200, 'boss');
 	this.boss.animations.add('walk', [0,1,2,3], 5, true);
