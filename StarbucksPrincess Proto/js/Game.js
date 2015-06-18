@@ -18,8 +18,9 @@ SBP.Game.prototype = {
     this.map.addTilesetImage('World', 'gameTiles');
  
     //create layers
- 
+ 	this.underlay = this.map.createLayer('Underlay');
     this.walk = this.map.createLayer('Walk');
+   
     this.blockedLayer = this.map.createLayer('BlockedLayer');
 
 
@@ -29,7 +30,7 @@ SBP.Game.prototype = {
     this.blockedLayer.resizeWorld();
 
     //collision on blockedLayer
-	this.map.setCollisionBetween(1, 200);
+	this.map.setCollisionBetween(1, 1000);
 
 	  this.game.physics.arcade.setBoundsToWorld(true, true, true, true, false);
     },
@@ -47,14 +48,7 @@ SBP.Game.prototype = {
 	this.game.stage.backgroundColor = '#787878';
 
 	// Background Image
-	this.beanCounter = this.game.add.image(this.game.stage.centerX, this.game.stage.centerY,"beanCounter");
-	this.beanCounter.fixedToCamera = true;
-	this.beanCounter.bringToTop();
-	this.beanCounter.scale.x = 2;
-	this.beanCounter.scale.y = 2;
-	this.beanCounter.anchor.x = -8.8;
-	this.beanCounter.anchor.y = -0.1;
-	
+
 
     //Erstellt für jedes Object aus der Tiled-Map im ObjectLayer in Objekt im Game
     this.createBeans();
@@ -73,12 +67,11 @@ SBP.Game.prototype = {
 	//this.game.sound.setDecodedCallback([ this.walk, this.hit, this.death, this.shoot ], start, this);
     //create player
 
- 	this.player = this.game.add.sprite(2700,2800,'player');
-	//startposition this.player = this.game.add.sprite(100,120,'player');
-    //bossposition// this.player = this.game.add.sprite(2700,2800,'player');; //Spieler erstellen, Startposition, Name
+ 	this.player = this.game.add.sprite(50,50,'player');
+ 	this.player.smoothed = false;
+    //bossposition// this.player = this.game.add.sprite(600, 2250, 'player'); //Spieler erstellen, Startposition, Name
 	
-	//testposition this.boss = this.game.add.sprite(700,2200, 'boss');
-	this.boss = this.game.add.sprite(2800,2700, 'boss'); //start boss 
+	this.boss = this.game.add.sprite(700,2200, 'boss');
 	this.boss.animations.add('walk', [0,1,2,3], 5, true);
 
 	
@@ -96,9 +89,9 @@ SBP.Game.prototype = {
     this.game.physics.arcade.enable(this.boss);
     this.boss.enableBody = true;
     //player gravity
-    //this.boss.body.bounce.y = 0.2;
-   // this.boss.body.bounce.x = 0.2;
-   // this.boss.body.gravity.y = 400;
+    this.boss.body.bounce.y = 0.2;
+    this.boss.body.bounce.x = 0.2;
+    this.boss.body.gravity.y = 400;
 	this.player.body.bounce.y = 0.2; //bei Aufprall zurückbouncen ... ist ja nen Blob!
 	this.player.body.bounce.x = 0.2;
     this.player.body.gravity.y = 700;
@@ -161,7 +154,14 @@ SBP.Game.prototype = {
       rightKey = this.game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
 	  fireKey = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 	  
-	  
+	// Background Image
+	this.beanCounter = this.game.add.image(this.game.stage.centerX, this.game.stage.centerY,"beanCounter");
+	this.beanCounter.fixedToCamera = true;
+	this.beanCounter.bringToTop();
+	this.beanCounter.scale.x = 2;
+	this.beanCounter.scale.y = 2;
+	this.beanCounter.anchor.x = -8.8;
+	this.beanCounter.anchor.y = -0.1;
 	
  }, 
   
@@ -256,7 +256,7 @@ SBP.Game.prototype = {
   },
 
   update: function() {
-	this.game.physics.arcade.TILE_BIAS = 200;
+	this.game.physics.arcade.TILE_BIAS = 600;
   	this.game.physics.arcade.collide(this.player, this.blockedLayer); //Kollision mit Layer
   	this.game.physics.arcade.overlap(this.player, this.blockedLayer); //Kollision mit Layer
   	this.game.physics.arcade.collide(this.player, this.boss);
@@ -325,7 +325,7 @@ SBP.Game.prototype = {
 	
  },
 
-
+ 
   render: function()
  
     { 
@@ -475,27 +475,12 @@ bossFight: function(){
 	// 
 	
 	 //this.game.add.tween(this.boss).to({ y: 300 }, 2000, Phaser.Easing.Quadratic.InOut, true, 0, 1000, true);
-	  var fightTimer = this.game.time.now;
-	 //while((1000 + this.fightTimer) > this.game.time.now){
-	 this.boss.body.velocity.y+100;
+	  this.fightTimer = this.game.time.now;
+	 while((200 + this.fightTimer) < this.game.time.now){
+	 this.boss.body.velocity.x = +600;
 	  //this.boss.body.velocity.x = -60;
-	 //var tween = this.add.tween(this.boss);
-	 //tween.to({x:2800,y:2600},1000);
-	 //var right = this.add.tween(this.boss);
-	//tween.onComplete.add(function(){
-		//console.log("onComplete");
-		//tween.to({x:2800,y:2700},1000);
-        //this.boss.x = 2800; this.boss.y = 2700;
-       // tween.start();
-   // });
- // move.to({x:2800,y:2600},1000);
-	//right.to({x:30}, 500, vanHalen, true, 0, Number.MAX_VALUE, 0);
- // tween.start();
-//this.game.add.tween(this.boss).to({x:2800,y:2650},1000).to({x:2700,y:2600},1000).loop().start();
-
-	
-	
-	 //}
+	 }
+	  
 	 //this.game.physics.arcade.moveToObject(this.boss,this.player,120);
 	  
 },
@@ -504,12 +489,14 @@ bossFight: function(){
  
  gameOver: function(){
 	 this.text="Du bist total kaputt!!!";
-	 this.reloadbutton = this.game.add.button(400,370,"reload",this.neustart,this);
+	 
+	this.reloadbutton = this.game.add.button(this.game.stage.centerX, this.game.stage.centerY,"reload",this.neustart,this);
 	 this.reloadbutton.fixedToCamera = true;
-	 //this.reloadButton.scale.x = 0.5;
-	 //this.reloadButton.scale.y = 0.5;
+	 //this.reloadButton.scale.setTo(0.7,0.7);
+	 //reloadButton.scale.y = 0.7;*/
+	 this.reloadbutton.anchor.setTo(-0.8,-1);
+
  },
- 
  neustart: function(){
 	
 	 this.state.start('Game');
