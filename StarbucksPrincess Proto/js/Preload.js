@@ -25,8 +25,7 @@ SBP.Preload.prototype = {
 	this.load.image("touch", "assets/images/touch.png");  
 	this.load.image("gamepad", "assets/images/gamepad.png");  
 	this.load.image("reload", "assets/images/reload.png");
-	this.load.image("beanCounter", "assets/images/_bohne.png");
-	this.load.spritesheet("boss", "assets/images/endboss.png",113,125);
+  this.load.spritesheet("boss", "assets/images/endboss.png",113,125);
   //Map
     this.load.tilemap('level1', 'assets/tileset/map01.json', null, Phaser.Tilemap.TILED_JSON);
   //Tileset
