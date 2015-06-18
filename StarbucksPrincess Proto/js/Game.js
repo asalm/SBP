@@ -66,10 +66,12 @@ SBP.Game.prototype = {
 	//this.game.sound.setDecodedCallback([ this.walk, this.hit, this.death, this.shoot ], start, this);
     //create player
 
- 	this.player = this.game.add.sprite(120,500,'player');
-    //bossposition// this.player = this.game.add.sprite(600, 2250, 'player'); //Spieler erstellen, Startposition, Name
+ 	this.player = this.game.add.sprite(2700,2800,'player');
+	//startposition this.player = this.game.add.sprite(100,120,'player');
+    //bossposition// this.player = this.game.add.sprite(2700,2800,'player');; //Spieler erstellen, Startposition, Name
 	
-	this.boss = this.game.add.sprite(700,2200, 'boss');
+	//testposition this.boss = this.game.add.sprite(700,2200, 'boss');
+	this.boss = this.game.add.sprite(2800,2700, 'boss'); //start boss 
 	this.boss.animations.add('walk', [0,1,2,3], 5, true);
 
 	
@@ -87,9 +89,9 @@ SBP.Game.prototype = {
     this.game.physics.arcade.enable(this.boss);
     this.boss.enableBody = true;
     //player gravity
-    this.boss.body.bounce.y = 0.2;
-    this.boss.body.bounce.x = 0.2;
-    this.boss.body.gravity.y = 400;
+    //this.boss.body.bounce.y = 0.2;
+   // this.boss.body.bounce.x = 0.2;
+   // this.boss.body.gravity.y = 400;
 	this.player.body.bounce.y = 0.2; //bei Aufprall zurückbouncen ... ist ja nen Blob!
 	this.player.body.bounce.x = 0.2;
     this.player.body.gravity.y = 700;
@@ -465,12 +467,27 @@ bossFight: function(){
 	// 
 	
 	 //this.game.add.tween(this.boss).to({ y: 300 }, 2000, Phaser.Easing.Quadratic.InOut, true, 0, 1000, true);
-	  this.fightTimer = this.game.time.now;
-	 while((200 + this.fightTimer) < this.game.time.now){
-	 this.boss.body.velocity.x = +600;
+	  var fightTimer = this.game.time.now;
+	 //while((1000 + this.fightTimer) > this.game.time.now){
+	 this.boss.body.velocity.y+100;
 	  //this.boss.body.velocity.x = -60;
-	 }
-	  
+	 //var tween = this.add.tween(this.boss);
+	 //tween.to({x:2800,y:2600},1000);
+	 //var right = this.add.tween(this.boss);
+	//tween.onComplete.add(function(){
+		//console.log("onComplete");
+		//tween.to({x:2800,y:2700},1000);
+        //this.boss.x = 2800; this.boss.y = 2700;
+       // tween.start();
+   // });
+ // move.to({x:2800,y:2600},1000);
+	//right.to({x:30}, 500, vanHalen, true, 0, Number.MAX_VALUE, 0);
+ // tween.start();
+//this.game.add.tween(this.boss).to({x:2800,y:2650},1000).to({x:2700,y:2600},1000).loop().start();
+
+	
+	
+	 //}
 	 //this.game.physics.arcade.moveToObject(this.boss,this.player,120);
 	  
 },
