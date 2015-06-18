@@ -1,0 +1,18 @@
+this.player = this.game.add.sprite(120,500,'player');	
+this.boss = this.game.add.sprite(700,2200, 'boss');
+
+    //  works regardless of world angle, parent angle or camera position
+    // game.world.setBounds(0, 0, 2000, 2000);
+    // game.world.angle = 10;
+    // game.camera.x = 300;
+	
+	var tween1 = this.add.tween(this.boss)
+	 tween1.to({x:2800,y: 2600},1000);/*.onComplete.add(function(){
+		console.log("onComplete");
+		tween1.stop();
+		tween1.to({x:2800,y:this.y +100},1000);
+  
+       tween1.start();
+    });*/
+	tween1.yoyo = true;
+	tween1.start();
