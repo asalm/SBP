@@ -126,15 +126,6 @@ SBP.Game.prototype = {
     this.shootBean.setAll('outOfBoundsKill', true);
     this.shootBean.setAll.collideWorldBounds = true;
 	
-	//create deadEnemy
-	this.deadE = this.game.add.group();
-    this.deadE.enableBody = true;
-    this.deadE.createMultiple(1, 'dude');
-    //this.deadE.setAll('anchor.x', 0.5);
-    this.deadE.setAll('anchor.y', 0.5);
-    this.deadE.setAll('outOfBoundsKill', true);
-   	this.deadE.setAll.collideWorldBounds = true;
-
     //Camera-Movement
     this.game.camera.follow(this.player);
     this.player.body.collideWorldBounds = true; //Kollision des Spielers
