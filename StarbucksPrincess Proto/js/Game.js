@@ -160,10 +160,10 @@ SBP.Game.prototype = {
 	this.beanCounter = this.game.add.image(this.game.stage.centerX, this.game.stage.centerY,"beanCounter");
 	this.beanCounter.fixedToCamera = true;
 	this.beanCounter.bringToTop();
-	this.beanCounter.scale.x = 2;
-	this.beanCounter.scale.y = 2;
+	this.beanCounter.scale.x = 1;
+	this.beanCounter.scale.y = 1;
 	this.beanCounter.anchor.x = -8.8;
-	this.beanCounter.anchor.y = -0.1;
+	this.beanCounter.anchor.y = -0.0;
 	
  }, 
   
@@ -201,7 +201,7 @@ SBP.Game.prototype = {
        	this.createFromTiledObject(element, this.bean);
 			}, this);
      	this.game.physics.arcade.enable(this.bean);
-       	this.bean.callAll('animations.add', 'animations','rotate', [0,1,2,3,4,5,6,7,8,4,3,2,1], 5, true);
+       	this.bean.callAll('animations.add', 'animations','rotate', [0,1,2,3,4,5,6,7,8,7,6,5,4,3,2,1], 5, true);
 	    this.bean.callAll('play', null, 'rotate');
 
   	},
@@ -332,7 +332,7 @@ SBP.Game.prototype = {
  
     { 
         this.game.debug.text(this.game.time.fps || '--', 20, 70, "#00ff00", "40px Courier");  
-		this.game.debug.text(this.count, 573, 50, "#ffffff", "36px Courier"); //Bohnenzähler
+		this.game.debug.text(this.count, 573, 42 , "#ffffff", "36px Courier"); //Bohnenzähler
 		this.game.debug.text(this.text, 20, 230, "#ffffff", "45px Courier");
 		//this.game.debug.bodyInfo(this.player, 16, 24);
 		this.game.debug.text(this.game.time.now, 20, 250, "#00ff00", "48px Courier");
