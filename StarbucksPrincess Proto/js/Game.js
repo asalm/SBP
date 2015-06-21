@@ -127,6 +127,15 @@ SBP.Game.prototype = {
     this.shootBean.setAll('outOfBoundsKill', true);
     this.shootBean.setAll.collideWorldBounds = true;
 	
+	//create shootCup
+	this.shootCup = this.game.add.group();
+    this.shootCup.enableBody = true;
+    this.shootCup.createMultiple(100, 'Becher');
+	//this.shootCup.setAll('body.tilePadding.x', 16);
+	//this.shootCup.setAll('body.tilePadding.y', 16);
+    this.shootCup.setAll('outOfBoundsKill', true);
+    this.shootCup.setAll.collideWorldBounds = true;
+	
     //Camera-Movement
     this.game.camera.follow(this.player);
     this.player.body.collideWorldBounds = true; //Kollision des Spielers
@@ -262,7 +271,7 @@ SBP.Game.prototype = {
 	this.game.physics.arcade.TILE_BIAS = 600;
   	this.game.physics.arcade.collide(this.player, this.blockedLayer); //Kollision mit Layer
   	this.game.physics.arcade.overlap(this.player, this.blockedLayer); //Kollision mit Layer
-  	this.game.physics.arcade.collide(this.player, this.boss);
+  	
 	this.game.physics.arcade.collide(this.enemy, this.blockedLayer, this.enemyMove); //Kollision mit Layer
 	this.game.physics.arcade.overlap(this.fBean, this.blockedLayer, this.collisionHandler, null, this);
 	this.game.physics.arcade.collide(this.fBean, this.enemy, this.collisionHandlerEnemy);
@@ -272,6 +281,9 @@ SBP.Game.prototype = {
     this.game.physics.arcade.overlap(this.player, this.deadly, this.hitDeadly, null, this);
     this.game.physics.arcade.collide(this.boss, this.blockedLayer);
     this.game.physics.arcade.collide(this.fBean, this.boss, this.bossbeanCollision, null, this);
+	this.game.physics.arcade.collide(this.fCup, this.player, this.hitCup, null, this);
+	this.game.physics.arcade.collide(this.player, this.boss,this.bodyCheck, null, this);
+	this.game.physics.arcade.collide(this.fCup, this.blockedLayer, this.collisionHandler);
     this.game.physics.arcade.overlap(this.player, this.overlay, this.overlaycollisionHandler, null, this);
 	
 	//  Reset the players velocity (movement)
@@ -351,20 +363,17 @@ SBP.Game.prototype = {
     
   	},
   fireCup: function(x,y){
-	this.fBean = this.shootBean.getFirstExists(false); 
-	this.fBean.enableBody = true;
+	this.fCup = this.shootCup.getFirstExists(false); 
+	this.fCup.enableBody = true;
 
-			if (this.fBean)
+			if (this.fCup)
 				{
-				 this.fBean.reset(this.boss.x+15, this.boss.y+15);
-				 this.game.physics.arcade.moveToXY(this.fBean,x,y,600);
+				 this.fCup.reset(this.boss.x+50, this.boss.y+20);
+				 this.game.physics.arcade.moveToXY(this.fCup,x,y,600);
 				
 				 this.shoot.play();
 				
-				 this.shootBean.createMultiple(5, 'Coffeebean');
-				 this.shootBean.setAll('scale.x',.5);
-				 this.shootBean.setAll('scale.y',.5);
-				 this.shootBean.setAll('angle', +45);
+				 this.shootCup.createMultiple(5, 'Becher');
 				}  
   },
   
@@ -436,7 +445,16 @@ SBP.Game.prototype = {
 	  //Bohne verlieren und erschrockenes Wegbouncen
   	this.looseBean();
     this.player.body.velocity.y =-250;
-	
+ },
+ 
+ hitCup: function(fCup) {
+	  //Bohne verlieren und erschrockenes Wegbouncen
+  	this.looseBean();
+	fCup.kill();
+ },
+ 
+ bodyCheck: function(){
+	 this.looseBean();
  },
  
  looseBean: function(){
@@ -472,6 +490,7 @@ SBP.Game.prototype = {
  collisionHandler: function(fBean){
 	 fBean.kill();
  },
+ 
  bossbeanCollision : function(fBean){
  	fBean.kill();
 	this.bosslife--;
