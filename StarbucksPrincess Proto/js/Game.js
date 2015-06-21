@@ -111,7 +111,7 @@ SBP.Game.prototype = {
 	//create lostBean
 	this.lostBean = this.game.add.group();
     this.lostBean.enableBody = true;
-    this.lostBean.createMultiple(500, 'Coffeebean');
+    this.lostBean.createMultiple(100, 'Coffeebean');
     this.lostBean.setAll('outOfBoundsKill', true);
     this.lostBean.setAll('checkWorldBounds', true);
 	
@@ -119,7 +119,7 @@ SBP.Game.prototype = {
 	//create shootBean
 	this.shootBean = this.game.add.group();
     this.shootBean.enableBody = true;
-    this.shootBean.createMultiple(5, 'Coffeebean');
+    this.shootBean.createMultiple(100, 'Coffeebean');
 	this.shootBean.setAll('scale.x',.5);
 	this.shootBean.setAll('scale.y',.5);
 	this.shootBean.setAll('body.tilePadding.x', 16);
@@ -350,7 +350,51 @@ SBP.Game.prototype = {
 	this.count++;	
     
   	},
+  fireCup: function(x,y){
+	this.fBean = this.shootBean.getFirstExists(false); 
+	this.fBean.enableBody = true;
+
+			if (this.fBean)
+				{
+				 this.fBean.reset(this.boss.x+15, this.boss.y+15);
+				 this.game.physics.arcade.moveToXY(this.fBean,x,y,600);
+				
+				 this.shoot.play();
+				
+				 this.shootBean.createMultiple(5, 'Coffeebean');
+				 this.shootBean.setAll('scale.x',.5);
+				 this.shootBean.setAll('scale.y',.5);
+				 this.shootBean.setAll('angle', +45);
+				}  
+  },
   
+  fireTenCup: function(){
+	  this.multi = new Array(5);
+	  console.log(this.multi.length);
+	  for(var i = 0; i < this.multi.length; i++){
+		this.multi[i] = this.shootBean.getFirstDead(); 
+		this.multi[i].enableBody = true;
+		console.log("erste schleife: " +i);
+	  }
+	var dirX = 2700;
+	var dirY = 2650;
+		for(var i = 0; i < this.multi.length; i++){
+			
+			if (this.multi[i])
+				{
+				 this.multi[i].reset(this.boss.x+15, this.boss.y+15);
+				 this.game.physics.arcade.moveToXY(this.multi[i],dirX,dirY,200,500);
+					console.log("Durchgang: " +i)
+				}
+			dirX = dirX-50;
+			dirX = dirY-50;
+		}
+	this.shoot.play();
+	this.shootBean.createMultiple(5, 'Coffeebean');
+	this.shootBean.setAll('scale.x',.5);
+	this.shootBean.setAll('scale.y',.5);
+	this.shootBean.setAll('angle', +45);		
+  },
     
   fireBean: function(){
 	
@@ -462,15 +506,7 @@ enemyMove: function(enemy){
 },
 
 bossFight: function(boss){
-	//part1, part 2, part3
-	//part1: doofes rumtanzen
-	//part2 body attack auf spieler
-	//part1
-	//part3 gezieltes schießen
-	//part1
-	//part4 body attack
-	//part5 sternschuss 10?
-	//loop while boss isAlive
+	
 	this.boss.animations.play('walk');
 	
 	var bosslife = 10;
@@ -526,6 +562,7 @@ bossFight: function(boss){
 	this.game.time.events.add(Phaser.Timer.SECOND * 9.5, function part2(){
 		this.boss.body.velocity.setTo(0,0);
 		//hier schießfunktion einfügen
+		this.fireCup(this.player.x,this.player.y);
 		}, this);
 		
 	//body attack
@@ -536,13 +573,23 @@ bossFight: function(boss){
 	//stoppen, danach mitte
 	this.game.time.events.add(Phaser.Timer.SECOND * 12, function part2(){
 		this.boss.body.velocity.setTo(0,0);
-		this.game.physics.arcade.moveToXY(this.boss,2700,2600,200,500);	
+		this.game.physics.arcade.moveToXY(this.boss,2700,2500,200,500);	
 		}, this);
 		
 	//stoppen, schießen
 	this.game.time.events.add(Phaser.Timer.SECOND * 12.5, function part2(){
 		this.boss.body.velocity.setTo(0,0);
-		//hier schießfunktion einfügen
+		var dirX = 2700;
+		var dirY = 2900;
+			this.fireCup(dirX,dirY);
+			this.fireCup(dirX-50,dirY-50);
+			this.fireCup(dirX-100,dirY-75);
+			this.fireCup(dirX-150,dirY-150);
+			this.fireCup(dirX,dirY-400);
+			this.fireCup(dirX+150,dirY-150);
+			this.fireCup(dirX+200,dirY-75);
+			this.fireCup(dirX+250,dirY-150);
+			
 		}, this);
 	
 },
