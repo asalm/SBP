@@ -75,14 +75,14 @@ SBP.Game.prototype = {
 	//this.game.sound.setDecodedCallback([ this.walk, this.hit, this.death, this.shoot ], start, this);
     //create player
 
- 	//this.player = this.game.add.sprite(2700,2800,'player');
+ 	this.player = this.game.add.sprite(2700,2800,'player');
 	//testposition//
-	this.player = this.game.add.sprite(120,500,'player');	
+	//this.player = this.game.add.sprite(120,500,'player');	
 	//startposition// this.player = this.game.add.sprite(50,50,'player');
     //bossposition// this.player = this.game.add.sprite(2700,2800,'player');; //Spieler erstellen, Startposition, Name
 
 	
-	this.boss = this.game.add.sprite(700,2200, 'boss');
+	this.boss = this.game.add.sprite(2700,2500, 'boss');
 	this.boss.animations.add('walk', [0,1,2,3], 5, true);
 
 	
@@ -102,7 +102,8 @@ SBP.Game.prototype = {
     //player gravity
     this.boss.body.bounce.y = 0.2;
     this.boss.body.bounce.x = 0.2;
-    this.boss.body.gravity.y = 400;
+    this.bossFight(this.boss);
+    //this.boss.body.gravity.y = 400;
 	this.player.body.bounce.y = 0.2; //bei Aufprall zurückbouncen ... ist ja nen Blob!
 	this.player.body.bounce.x = 0.2;
     this.player.body.gravity.y = 700;
@@ -323,7 +324,7 @@ SBP.Game.prototype = {
 		this.boss.body.gravity.y = +1200;
 	}*/
 	
-	this.bossFight();
+	
 	
  },
 
@@ -460,7 +461,7 @@ enemyMove: function(enemy){
 	
 },
 
-bossFight: function(){
+bossFight: function(boss){
 	//part1, part 2, part3
 	//part1: doofes rumtanzen
 	//part2 body attack auf spieler
@@ -476,16 +477,33 @@ bossFight: function(){
 	// 
 	// 
 	
-	 //this.game.add.tween(this.boss).to({ y: 300 }, 2000, Phaser.Easing.Quadratic.InOut, true, 0, 1000, true);
-	  this.fightTimer = this.game.time.now;
-	 while((200 + this.fightTimer) < this.game.time.now){
-	 this.boss.body.velocity.x = +600;
+	 this.tween1 = this.game.add.tween(this.boss);
+	 // this.fightTimer = this.game.time.now;
+	 //while((200 + this.fightTimer) < this.game.time.now){
+	 //this.boss.body.velocity.x = +600;
 	  //this.boss.body.velocity.x = -60;
-	 }
+	// }
+
+	 this.game.time.events.add(Phaser.Timer.SECOND * 2, function bossUp(){
+		this.boss.body.velocity.y = +200;
+
+		}
+	 	, this);
+	 
+	 this.game.time.events.add(Phaser.Timer.SECOND * 4, function bossDown(){
+		this.boss.body.velocity.y = -200;
+		}
+	 	, this);
+
+	 this.game.time.events.add(Phaser.Timer.SECOND * 6, function bossDown(){
+		this.game.physics.arcade.moveToObject(this.boss,this.player,500);
+		}
+	 	, this);
 	  
 	 //this.game.physics.arcade.moveToObject(this.boss,this.player,120);
 	  
 },
+
 	
 
  
