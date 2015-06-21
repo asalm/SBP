@@ -82,7 +82,7 @@ SBP.Game.prototype = {
     //bossposition// this.player = this.game.add.sprite(2700,2800,'player');; //Spieler erstellen, Startposition, Name
 
 	
-	this.boss = this.game.add.sprite(2700,2500, 'boss');
+	this.boss = this.game.add.sprite(2700,2700, 'boss');
 	this.boss.animations.add('walk', [0,1,2,3], 5, true);
 
 	
@@ -100,8 +100,8 @@ SBP.Game.prototype = {
     this.game.physics.arcade.enable(this.boss);
     this.boss.enableBody = true;
     //player gravity
-    this.boss.body.bounce.y = 0.2;
-    this.boss.body.bounce.x = 0.2;
+    //this.boss.body.bounce.y = 0.2;
+    //this.boss.body.bounce.x = 0.2;
     this.bossFight(this.boss);
     //this.boss.body.gravity.y = 400;
 	this.player.body.bounce.y = 0.2; //bei Aufprall zurückbouncen ... ist ja nen Blob!
@@ -474,37 +474,78 @@ bossFight: function(boss){
 	this.boss.animations.play('walk');
 	
 	var bosslife = 10;
-	// 
-	// 
 	
-	 this.tween1 = this.game.add.tween(this.boss);
-	 // this.fightTimer = this.game.time.now;
-	 //while((200 + this.fightTimer) < this.game.time.now){
-	 //this.boss.body.velocity.x = +600;
-	  //this.boss.body.velocity.x = -60;
-	// }
-
-	 this.game.time.events.add(Phaser.Timer.SECOND * 2, function bossUp(){
-		this.boss.body.velocity.y = +200;
-
+	//nach links oben 
+	this.game.time.events.add(Phaser.Timer.SECOND * 1, function start(){
+		this.game.physics.arcade.moveToXY(this.boss,2500,2600,200,700);
 		}
 	 	, this);
-	 
-	 this.game.time.events.add(Phaser.Timer.SECOND * 4, function bossDown(){
-		this.boss.body.velocity.y = -200;
-		}
-	 	, this);
+	
+	//kurve nach unten
+	this.game.time.events.add(Phaser.Timer.SECOND * 2, function part1(){
+		this.tween1 = this.game.add.tween(this.boss).to({
+			x: [2500, 2600, 2700, 2800, 2900, 3000, 3050],
+			y: [2600, 2650, 2760, 2790, 2700, 2650, 2550],
+		}, 2000,Phaser.Easing.Quadratic.Out, true).interpolation(function(v, k){
+			return Phaser.Math.bezierInterpolation(v, k);
+			});
+	}, this);
+		
+	//nach links oben
+	this.game.time.events.add(Phaser.Timer.SECOND * 4, function part2(){
+		this.game.physics.arcade.moveToXY(this.boss,2500,2550,200,600);		
+		}, this);
+		
+	//body attack
+	this.game.time.events.add(Phaser.Timer.SECOND * 5, function part2(){
+		this.game.physics.arcade.moveToXY(this.boss,this.player.x,this.player.y,600);
+		}, this);
+		
+	//stoppen, danach nach links oben
+	this.game.time.events.add(Phaser.Timer.SECOND * 6, function part2(){
+		this.boss.body.velocity.setTo(0,0);
+		this.game.physics.arcade.moveToXY(this.boss,2500,2600,200,600);		
+		}, this);
 
-	 this.game.time.events.add(Phaser.Timer.SECOND * 6, function bossDown(){
-		this.game.physics.arcade.moveToObject(this.boss,this.player,500);
-		}
-	 	, this);
-	  
-	 //this.game.physics.arcade.moveToObject(this.boss,this.player,120);
-	  
+	//kurve
+	this.game.time.events.add(Phaser.Timer.SECOND * 7, function part1(){
+		this.tween1 = this.game.add.tween(this.boss).to({
+			x: [2500, 2600, 2700, 2800, 2900, 3000, 3050],
+			y: [2600, 2650, 2760, 2790, 2700, 2650, 2550],
+		}, 2000,Phaser.Easing.Quadratic.Out, true).interpolation(function(v, k){
+			return Phaser.Math.bezierInterpolation(v, k);
+			});
+	}, this);
+	
+	//in die mitte
+	this.game.time.events.add(Phaser.Timer.SECOND * 9, function part2(){
+		this.game.physics.arcade.moveToXY(this.boss,2700,2600,200,500);		
+		}, this);
+		
+	//stoppen, schießen
+	this.game.time.events.add(Phaser.Timer.SECOND * 9.5, function part2(){
+		this.boss.body.velocity.setTo(0,0);
+		//hier schießfunktion einfügen
+		}, this);
+		
+	//body attack
+	this.game.time.events.add(Phaser.Timer.SECOND * 11, function part2(){
+		this.game.physics.arcade.moveToXY(this.boss,this.player.x,this.player.y,600);
+		}, this);
+		
+	//stoppen, danach mitte
+	this.game.time.events.add(Phaser.Timer.SECOND * 12, function part2(){
+		this.boss.body.velocity.setTo(0,0);
+		this.game.physics.arcade.moveToXY(this.boss,2700,2600,200,500);	
+		}, this);
+		
+	//stoppen, schießen
+	this.game.time.events.add(Phaser.Timer.SECOND * 12.5, function part2(){
+		this.boss.body.velocity.setTo(0,0);
+		//hier schießfunktion einfügen
+		}, this);
+	
 },
-
-	
 
  
  gameOver: function(){
