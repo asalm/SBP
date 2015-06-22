@@ -40,10 +40,11 @@ SBP.Preload.prototype = {
   //Deadly sprite
     this.load.image('poisen', 'assets/images/poisen.png');  
   //Player sprite
-
+	this.game.load.script('Player', 'js/scr/Player.js');
     this.load.spritesheet('player', 'assets/char/nSlime_32x36_sheet.png', 32, 36);
     this.load.spritesheet('dude', 'assets/dude.png', 32,48);
   
+	this.game.load.script('Boss', 'js/scr/Boss.js');
   //Sounds
   this.load.audio('walk', 'assets/sounds/walk.mp3');
   this.load.audio('shoot', 'assets/sounds/shoot.mp3');
