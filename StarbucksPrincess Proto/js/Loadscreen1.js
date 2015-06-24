@@ -10,6 +10,7 @@ SBP.Menu.prototype = {
   var gameTitle;
   var playButton;
   this.bg = this.game.add.image(0,0,"background");
+  this.titlechars = this.game.add.image(this.game.world.centerX, this.game.world.centerY-225,"chars");
   this.gameTitle = this.game.add.image(this.game.world.centerX, this.game.world.centerY-150, "logo");
 
 
@@ -19,6 +20,12 @@ SBP.Menu.prototype = {
   this.blob.scale.y = 2;
   this.blob.smoothed = false;
 */
+
+		
+		this.titlechars.anchor.setTo(0.5,0.5);
+		this.titlechars.scale.x = 0.7;
+		this.titlechars.scale.y = 0.7;
+		this.titlechars.smoothed = false;
 
 	this.choose = this.game.add.image(this.game.world.centerX, this.game.world.centerY+100, "choose");
 	this.choose.scale.x = 0.7;
@@ -54,6 +61,9 @@ SBP.Menu.prototype = {
 
 		this.playButton2.scale.set(0.5);
 		this.playButton3.scale.set(0.3);
+
+
+
   
   },
   

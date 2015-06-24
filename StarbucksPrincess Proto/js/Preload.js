@@ -22,6 +22,7 @@ SBP.Preload.prototype = {
   //Background Image
   this.load.image("choose","assets/images/chooseyourweapon.png");
   this.load.image("logo","assets/images/logo.png");
+  this.load.image("chars","assets/images/titlechars.png");
     this.load.image("background", "assets/images/Background.jpg");  
 	this.load.image("keyboard", "assets/images/pfeiltasten.png");  
 	this.load.image("touch", "assets/images/touch.png");  
