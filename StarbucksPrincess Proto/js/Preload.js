@@ -28,6 +28,7 @@ SBP.Preload.prototype = {
 	this.load.image("touch", "assets/images/touch.png");  
 	this.load.image("gamepad", "assets/images/gamepad.png");  
 	this.load.image("reload", "assets/images/reload.png");
+  this.load.image("gameover","assets/images/gameover.png");
   this.load.image("beanCounter", "assets/images/_bohne.png");
   this.load.spritesheet("boss", "assets/images/endboss.png",113,125);
   //Map

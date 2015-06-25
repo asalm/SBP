@@ -44,7 +44,7 @@ SBP.Game.prototype = {
 	this.text = "";
 	var beanTime;
 	this.beanTime = 0;
-	this.count=25;
+	this.count=4;
 	this.game.stage.backgroundColor = '#787878';
 	
 	// Background Image
@@ -76,7 +76,8 @@ SBP.Game.prototype = {
     //create player
 
  	
-	this.player = new Player(this.game, 2000,2700);
+	//this.player = new Player(this.game, 2000,2700);
+	this.player = new Player(this.game, 50, 50);
 	this.player.create();
 	//testposition//
 	//this.player = this.game.add.sprite(120,500,'player');	
@@ -136,8 +137,8 @@ SBP.Game.prototype = {
 	this.beanCounter.bringToTop();
 	this.beanCounter.scale.x = 1;
 	this.beanCounter.scale.y = 1;
-	this.beanCounter.anchor.x = -8.8;
-	this.beanCounter.anchor.y = -0.0;
+	this.beanCounter.anchor.x = -4.2;
+	//this.beanCounter.anchor.y = -0.0;
 	
  }, 
   
@@ -297,9 +298,9 @@ SBP.Game.prototype = {
  
     { 
         this.game.debug.text(this.game.time.fps || '--', 20, 70, "#00ff00", "40px Courier");  
-		this.game.debug.text(this.count, 573, 42 , "#ffffff", "36px Courier"); //Bohnenzähler
-		this.game.debug.text(this.text, 20, 230, "#ffffff", "45px Courier");
-		this.game.debug.bodyInfo(this.player, 16, 24);
+		this.game.debug.text(this.count, 595, 40 , "#00000", "36px Impact"); //Bohnenzähler
+		//this.game.debug.text(this.text, 20, 230, "#ffffff", "45px Courier");
+		//this.game.debug.bodyInfo(this.player, 16, 24);
 		this.game.debug.text(this.game.time.now, 20, 250, "#00ff00", "48px Courier");
 		this.game.debug.text(this.bosslife,20,280,"#00ff00","24px Courier");
 		
@@ -439,13 +440,19 @@ enemyMove: function(enemy){
 
  
  gameOver: function(){
-	 this.text="Du bist total kaputt!!!";
+	 this.gameover = this.game.add.image(-78,-80,"gameover");
+	 //this.gameover.scale.x = 0.5;
+	 //this.gameover.scale.y = 0.5;
+	 //this.gameover.anchor.setTo(0.5,0.5)
+	 this.gameover.fixedToCamera = true;
 	 
-	this.reloadbutton = this.game.add.button(this.game.stage.centerX, this.game.stage.centerY,"reload",this.neustart,this);
-	 this.reloadbutton.fixedToCamera = true;
+	this.reloadbutton = this.game.add.button(300, 275,"reload",this.neustart,this);
+	this.reloadbutton.fixedToCamera = true;
+	this.reloadbutton.scale.x = 1;
+	this.reloadbutton.scale.y = 1;
 	 //this.reloadButton.scale.setTo(0.7,0.7);
 	 //reloadButton.scale.y = 0.7;*/
-	 this.reloadbutton.anchor.setTo(-0.8,-1);
+	 //this.reloadbutton.anchor.setTo(-0.8,-1);
 
  },
  neustart: function(){
