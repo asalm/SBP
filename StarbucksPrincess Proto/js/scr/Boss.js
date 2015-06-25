@@ -14,15 +14,15 @@
 		this.body.collideWorldBounds = true;
 		//create shootCup
 		this.shootCup = this.game.add.group();
-		this.shootCup.enableBody = true;
-		this.shootCup.createMultiple(100, 'Becher');
 		this.shootCup.setAll('outOfBoundsKill', true);
 		this.shootCup.setAll.collideWorldBounds = true;
-		this.shootCup.physicsBodyType = Phaser.Physics.ARCADE;
+		this.shootCup=this.game.add.physicsGroup(Phaser.Physics.ARCADE);
+		
+		//this.projectiles = this.game.add.group(this.shootBean,this.shootCup);
 		
 		this.bosslife = true;
 		this.bossFight(player);
-		SBP.game.time.events.add(Phaser.Timer.SECOND * 13, this.bossFight(player),this);
+		//SBP.game.time.events.add(Phaser.Timer.SECOND * 13, this.bossFight(player),this);
 	}
 
 	Boss.prototype.bossFight = function(player){
@@ -113,16 +113,12 @@
 	}
 	
 	Boss.prototype.fireCup = function(x,y,shootCup){
-		this.fCup = this.shootCup.getFirstExists(false); 
-		this.fCup.physicsBodyType = Phaser.Physics.ARCADE;
-		this.fCup.enableBody = true;
+		this.fCup = this.shootCup.create(this.x+50, this.y+20,'Becher',1); 
+		//this.fCup.enableBody = true;
 
 			if (this.fCup)
 				{
-				 this.fCup.reset(this.x+50, this.y+20);
 				 this.game.physics.arcade.moveToXY(this.fCup,x,y,600);
-				
-				 this.shootCup.createMultiple(5, 'Becher');
 				}  
 	}
 

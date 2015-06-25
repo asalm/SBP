@@ -77,7 +77,7 @@ SBP.Game.prototype = {
 
  	
 	//this.player = new Player(this.game, 2000,2700);
-	this.player = new Player(this.game, 50, 50);
+	this.player = new Player(this.game, 2700, 2800);
 	this.player.create();
 	//testposition//
 	//this.player = this.game.add.sprite(120,500,'player');	
@@ -105,7 +105,7 @@ SBP.Game.prototype = {
 	
 	this.projectiles = this.game.add.group(this.shootBean);
 	this.projectiles.enableBody = true;
-	
+
 		
     //Camera-Movement
     this.game.camera.follow(this.player);
@@ -119,7 +119,7 @@ SBP.Game.prototype = {
     //  The final parameter (false) controls if the boundary should use its own collision group or not. In this case we don't require
     //  that, so it's set to false. But if you had custom collision groups set-up then you would need this set to true.
 
-	this.bossPointer = this.game.add.graphics(2550,2812);
+	this.bossPointer = this.game.add.graphics(2579.17,2812);
 	
 
     //InputParameter
@@ -239,7 +239,7 @@ SBP.Game.prototype = {
 	this.game.physics.arcade.collide(this.enemy, this.blockedLayer, this.enemyMove); //Kollision mit Layer
 	this.game.physics.arcade.overlap(this.shootBean, this.blockedLayer, this.collisionHandler, null, this);
 	this.game.physics.arcade.collide(this.shootBean, this.enemy, this.collisionHandlerEnemy);
-	this.game.physics.arcade.overlap(this.player, this.enemy, this.hitDanger, null, this);
+	this.game.physics.arcade.collide(this.player, this.enemy, this.hitDanger);
 	this.game.physics.arcade.overlap(this.player, this.bean, this.collectBean, null, this);
     this.game.physics.arcade.overlap(this.player, this.mahlwerk, this.hitDanger, null, this);
     this.game.physics.arcade.overlap(this.player, this.deadly, this.hitDeadly, null, this);
@@ -251,8 +251,10 @@ SBP.Game.prototype = {
 		this.game.physics.arcade.collide(this.boss, this.blockedLayer);
 		this.game.physics.arcade.collide(this.shootBean, this.boss, this.bossbeanCollision, null, this);
 		this.game.physics.arcade.collide(this.player, this.boss,this.bodyCheck, null, this);
-		this.game.physics.arcade.collide(this.fCup, this.player, this.hitCup, null, this);
-		this.game.physics.arcade.collide(this.fCup, this.blockedLayer, this.collisionHandler);
+		this.game.physics.arcade.collide(this.boss.shootCup, this.player, this.hitCup, null, this);
+		this.game.physics.arcade.collide(this.boss.shootCup, this.blockedLayer, this.collisionHandler);
+		this.projectiles = this.game.add.group(this.shootBean,this.shootCup);
+		this.projectiles.enableBody = true;
 	}
 	//  Reset the players velocity (movement)
     this.player.body.velocity.x = 0; //sorgt dafür das nach Loslassen der Pfeiltasten die Spielfigur stehen bleibt
@@ -300,7 +302,7 @@ SBP.Game.prototype = {
         this.game.debug.text(this.game.time.fps || '--', 20, 70, "#00ff00", "40px Courier");  
 		this.game.debug.text(this.count, 595, 40 , "#00000", "36px Impact"); //Bohnenzähler
 		//this.game.debug.text(this.text, 20, 230, "#ffffff", "45px Courier");
-		//this.game.debug.bodyInfo(this.player, 16, 24);
+		this.game.debug.bodyInfo(this.player, 16, 24);
 		this.game.debug.text(this.game.time.now, 20, 250, "#00ff00", "48px Courier");
 		this.game.debug.text(this.bosslife,20,280,"#00ff00","24px Courier");
 		
@@ -358,10 +360,11 @@ SBP.Game.prototype = {
     this.player.body.velocity.y =-250;
  },
  
- hitCup: function(fCup) {
-	  //Bohne verlieren und erschrockenes Wegbouncen
+ hitCup: function(projectiles) {
+	  //Bohne verlieren ohne erschrockenes Wegbouncen
+	this.player.body.immovable =true;  
   	this.looseBean();
-	this.fCup.kill();
+	projectiles.kill();
  },
  
  bodyCheck: function(){
@@ -402,16 +405,17 @@ SBP.Game.prototype = {
 	 projectiles.kill();
  },
  
- bossbeanCollision : function(projectiles){
+ bossbeanCollision : function(boss, projectiles){
  	projectiles.kill();
 	this.bosslife--;
 
-	if(this.bosslife <= 0){
-		this.boss.kill();
+	if(this.bosslife === 0){
+		boss.kill();
 	}
 },
  
  collisionHandlerEnemy: function(projectiles, enemy){
+	 
 	 //Bohne weg, Gegner weg
 	 projectiles.kill();
 	 enemy.animations.play('stay');
