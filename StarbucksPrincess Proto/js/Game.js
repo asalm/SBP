@@ -96,16 +96,15 @@ SBP.Game.prototype = {
 	
 	
 	//create shootBean
+	
+	
 	this.shootBean = this.game.add.group();
-    this.shootBean.enableBody = true;
-    this.shootBean.createMultiple(100, 'Coffeebean');
-	this.shootBean.setAll('scale.x',.5);
-	this.shootBean.setAll('scale.y',.5);
-	this.shootBean.setAll('body.tilePadding.x', 16);
-	this.shootBean.setAll('body.tilePadding.y', 16);
     this.shootBean.setAll('outOfBoundsKill', true);
     this.shootBean.setAll.collideWorldBounds = true;
-	this.shootBean.physicsBodyType = Phaser.Physics.ARCADE;
+	this.shootBean=this.game.add.physicsGroup(Phaser.Physics.ARCADE);
+	
+	this.projectiles = this.game.add.group(this.shootBean);
+	this.projectiles.enableBody = true;
 	
 		
     //Camera-Movement
@@ -238,8 +237,8 @@ SBP.Game.prototype = {
   	this.game.physics.arcade.overlap(this.player, this.blockedLayer); //Kollision mit Layer
   	
 	this.game.physics.arcade.collide(this.enemy, this.blockedLayer, this.enemyMove); //Kollision mit Layer
-	this.game.physics.arcade.overlap(this.fBean, this.blockedLayer, this.collisionHandler, null, this);
-	this.game.physics.arcade.collide(this.fBean, this.enemy, this.collisionHandlerEnemy);
+	this.game.physics.arcade.overlap(this.shootBean, this.blockedLayer, this.collisionHandler, null, this);
+	this.game.physics.arcade.collide(this.shootBean, this.enemy, this.collisionHandlerEnemy);
 	this.game.physics.arcade.overlap(this.player, this.enemy, this.hitDanger, null, this);
 	this.game.physics.arcade.overlap(this.player, this.bean, this.collectBean, null, this);
     this.game.physics.arcade.overlap(this.player, this.mahlwerk, this.hitDanger, null, this);
@@ -247,9 +246,10 @@ SBP.Game.prototype = {
    	//this.game.physics.arcade.collide(this.fCup, this.player, this.hitCup, null, this);
 	//this.game.physics.arcade.collide(this.fCup, this.blockedLayer, this.collisionHandler);
     this.game.physics.arcade.overlap(this.player, this.overlay, this.overlaycollisionHandler, null, this);
+	
 	if(this.boss){
 		this.game.physics.arcade.collide(this.boss, this.blockedLayer);
-		this.game.physics.arcade.collide(this.fBean, this.boss, this.bossbeanCollision, null, this);
+		this.game.physics.arcade.collide(this.shootBean, this.boss, this.bossbeanCollision, null, this);
 		this.game.physics.arcade.collide(this.player, this.boss,this.bodyCheck, null, this);
 		this.game.physics.arcade.collide(this.fCup, this.player, this.hitCup, null, this);
 		this.game.physics.arcade.collide(this.fCup, this.blockedLayer, this.collisionHandler);
@@ -322,15 +322,15 @@ SBP.Game.prototype = {
 	
      if (this.game.time.now > this.beanTime){   
 		if(this.count > 0){
-			this.fBean = this.shootBean.getFirstExists(false);
+			this.fBean = this.shootBean.create(this.player.x+15, this.player.y+15,'Coffeebean',1);
 						
 			this.count--;
 
 			this.fBean.enableBody = true;
-
+			
 			if (this.fBean)
 				{
-				 this.fBean.reset(this.player.x+15, this.player.y+15);
+				 //this.fBean.reset(this.player.x+15, this.player.y+15);
 				 if(leftKey.isDown)
 					this.fBean.body.velocity.x = -400;
 				 else
@@ -338,10 +338,8 @@ SBP.Game.prototype = {
 				
 				 this.shoot.play();
 				 this.beanTime = this.game.time.now + 200;
-				 this.shootBean.createMultiple(5, 'Coffeebean');
 				 this.shootBean.setAll('scale.x',.5);
 				 this.shootBean.setAll('scale.y',.5);
-				 this.shootBean.setAll('angle', +45);
 				}
 		}
 	}
@@ -400,12 +398,12 @@ SBP.Game.prototype = {
  	return false;
  },
 
- collisionHandler: function(fBean){
-	 fBean.kill();
+ collisionHandler: function(projectiles){
+	 projectiles.kill();
  },
  
- bossbeanCollision : function(fBean){
- 	fBean.kill();
+ bossbeanCollision : function(projectiles){
+ 	projectiles.kill();
 	this.bosslife--;
 
 	if(this.bosslife <= 0){
@@ -413,9 +411,9 @@ SBP.Game.prototype = {
 	}
 },
  
- collisionHandlerEnemy: function(fBean, enemy){
+ collisionHandlerEnemy: function(projectiles, enemy){
 	 //Bohne weg, Gegner weg
-	 fBean.kill();
+	 projectiles.kill();
 	 enemy.animations.play('stay');
 	 enemy.body.checkCollision.down=false; //verhindert Kollisionserkennung in jede Richtung
 	 enemy.body.checkCollision.up=false;
