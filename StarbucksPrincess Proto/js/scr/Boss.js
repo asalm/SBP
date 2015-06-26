@@ -17,6 +17,7 @@
 		this.shootCup.setAll('outOfBoundsKill', true);
 		this.shootCup.setAll.collideWorldBounds = true;
 		this.shootCup=this.game.add.physicsGroup(Phaser.Physics.ARCADE);
+		var stopped = false;
 		
 		//this.projectiles = this.game.add.group(this.shootBean,this.shootCup);
 		
@@ -27,7 +28,7 @@
 
 	Boss.prototype.bossFight = function(player){
 		this.animations.play('walk');
-	
+		stopped = false;
 			
 		//nach links oben 
 		this.game.time.events.add(Phaser.Timer.SECOND * 1, function start(){
@@ -109,7 +110,10 @@
 				this.fireCup(dirX+250,dirY-150);
 				
 			}, this);
-	
+			
+		this.game.time.events.add(Phaser.Timer.SECOND * 13, function part2(){
+			this.bossFight(player);
+		}, this);
 	}
 	
 	Boss.prototype.fireCup = function(x,y,shootCup){
@@ -120,5 +124,9 @@
 				{
 				 this.game.physics.arcade.moveToXY(this.fCup,x,y,600);
 				}  
+	}
+	
+	Boss.prototype.isStopped = function(){
+		return stopped;
 	}
 

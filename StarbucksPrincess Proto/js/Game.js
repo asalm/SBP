@@ -293,6 +293,8 @@ SBP.Game.prototype = {
 		this.boss = new Boss(this.game, 2700,2700);
 		this.boss.create(this.player);
 	}
+	
+	
  },
 
  
