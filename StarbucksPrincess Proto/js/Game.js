@@ -55,17 +55,12 @@ SBP.Game.prototype = {
 	this.beanCounter.scale.x = 2;
 	this.beanCounter.scale.y = 2;
 	this.beanCounter.anchor.setTo(-8.8,-0.1);
-		
+	
+	//Erstellt für jedes Object aus der Tiled-Map im ObjectLayer in Objekt im Game
+	this.TiledGedingse = new TiledGedingse(this.game, this.map);
+	this.TiledGedingse.create();
 
-
-    //Erstellt für jedes Object aus der Tiled-Map im ObjectLayer in Objekt im Game
-    this.createBeans();
-    this.createObstacle();
-	this.createEnemys();
-	this.createDeadly();
- 
-
-	//create sounds
+  	//create sounds
 	this.walk = this.game.add.audio('walk');
 	this.hit = this.game.add.audio('hit');
 	this.death = this.game.add.audio('death');
@@ -77,7 +72,7 @@ SBP.Game.prototype = {
 
  	
 	//this.player = new Player(this.game, 2000,2700);
-	this.player = new Player(this.game, 2700, 2800);
+	this.player = new Player(this.game, 50, 50);
 	this.player.create();
 	//testposition//
 	//this.player = this.game.add.sprite(120,500,'player');	
@@ -141,108 +136,20 @@ SBP.Game.prototype = {
 	
  }, 
   
-  findObjectsByType: function(type, map, layerName) {
  
-    var result = new Array();
- 
-    map.objects[layerName].forEach(function(element){
- 
-      if(element.properties.type === type) {
- 
-        //Phaser uses top left, Tiled bottom left so we have to adjust
- 
-        //also keep in mind that some images could be of different size as the tile size
- 
-        //so they might not be placed in the exact position as in Tiled
- 
-        element.y -= map.tileHeight;
- 
-        result.push(element);
- 
-      }     
- 
-    });
- 
-    return result;
- 
-  },
-   createBeans: function() {
-
-     	this.bean = this.game.add.group();
-     	this.bean.enableBody = true;
-     	var result = this.findObjectsByType('bohne', this.map, 'Bean');
-     	result.forEach(function(element){
-       	this.createFromTiledObject(element, this.bean);
-			}, this);
-     	this.game.physics.arcade.enable(this.bean);
-       	this.bean.callAll('animations.add', 'animations','rotate', [0,1,2,3,4,5,6,7,8,7,6,5,4,3,2,1], 5, true);
-	    this.bean.callAll('play', null, 'rotate');
-
-  	},
-	createDeadly: function() {
-		this.deadly = this.game.add.group();
-		this.deadly.enableBody = true;
-		var result = this.findObjectsByType('deadly',this.map,'Deadly');
-		result.forEach(function(element){
-			this.createFromTiledObject(element, this.deadly);
-		}, this);
-		
-	 },
-    createObstacle: function (){
-      this.mahlwerk = this.game.add.group();
-      this.mahlwerk.enableBody = true;
-      var result = this.findObjectsByType('grind', this.map, 'Danger');
-        result.forEach(function(element){
-          this.createFromTiledObject(element, this.mahlwerk);
-        }, this);
-
-    },
-	
-	createEnemys: function (){
-      this.enemy = this.game.add.group();
-      this.enemy.enableBody = true;
-	  this.enemy.physicsBodyType = Phaser.Physics.ARCADE;
-      var result = this.findObjectsByType('enemy', this.map, 'Gegner');
-        result.forEach(function(element){
-          this.createFromTiledObject(element, this.enemy);
-        }, this);
-		this.game.physics.arcade.enable(this.enemy);
-		var dir;
-	  this.dir = +50;
-	  this.enemy.setAll('body.gravity.y', 700);
-	  this.enemy.callAll('animations.add', 'animations','left', [0,1,2,3], 10, true);
-	  this.enemy.callAll('animations.add', 'animations','right', [5,6,7,8], 10, true);
-	  this.enemy.callAll('animations.add', 'animations','stay', [4], 10, true);
-	  this.enemy.callAll('play', null, 'right');
-	  this.enemy.setAll('body.velocity.x', -50);
-	  this.enemy.setAll('outOfBoundsKill', true);
-	  
-	  
-    },
-	
-	
-	
-    createFromTiledObject: function(element, group) {
-    var sprite = group.create(element.x, element.y, element.properties.sprite);
-              console.log("Gefahr erstellt");
-      //copy all properties to the sprite
-      Object.keys(element.properties).forEach(function(key){
-        sprite[key] = element.properties[key];
-      });
-  },
 
   update: function() {
 	this.game.physics.arcade.TILE_BIAS = 600;
   	this.game.physics.arcade.collide(this.player, this.blockedLayer); //Kollision mit Layer
   	this.game.physics.arcade.overlap(this.player, this.blockedLayer); //Kollision mit Layer
   	
-	this.game.physics.arcade.collide(this.enemy, this.blockedLayer, this.enemyMove); //Kollision mit Layer
+	this.game.physics.arcade.collide(this.TiledGedingse.enemy, this.blockedLayer, this.enemyMove); //Kollision mit Layer
 	this.game.physics.arcade.overlap(this.shootBean, this.blockedLayer, this.collisionHandler, null, this);
-	this.game.physics.arcade.collide(this.shootBean, this.enemy, this.collisionHandlerEnemy);
-	this.game.physics.arcade.collide(this.player, this.enemy, this.hitDanger);
-	this.game.physics.arcade.overlap(this.player, this.bean, this.collectBean, null, this);
-    this.game.physics.arcade.overlap(this.player, this.mahlwerk, this.hitDanger, null, this);
-    this.game.physics.arcade.overlap(this.player, this.deadly, this.hitDeadly, null, this);
+	this.game.physics.arcade.collide(this.shootBean, this.TiledGedingse.enemy, this.collisionHandlerEnemy);
+	this.game.physics.arcade.collide(this.player, this.TiledGedingse.enemy, this.hitDanger);
+	this.game.physics.arcade.overlap(this.player, this.TiledGedingse.bean, this.collectBean, null, this);
+    this.game.physics.arcade.overlap(this.player, this.TiledGedingse.mahlwerk, this.hitDanger, null, this);
+    this.game.physics.arcade.overlap(this.player, this.TiledGedingse.deadly, this.hitDeadly, null, this);
    	//this.game.physics.arcade.collide(this.fCup, this.player, this.hitCup, null, this);
 	//this.game.physics.arcade.collide(this.fCup, this.blockedLayer, this.collisionHandler);
     this.game.physics.arcade.overlap(this.player, this.overlay, this.overlaycollisionHandler, null, this);

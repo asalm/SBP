@@ -49,6 +49,7 @@ SBP.Preload.prototype = {
     this.load.spritesheet('dude', 'assets/dude.png', 32,48);
   
 	this.game.load.script('Boss', 'js/scr/Boss.js');
+	this.game.load.script('TiledGedingse', 'js/scr/TiledGedingse.js');
   //Sounds
   this.load.audio('walk', 'assets/sounds/walk.mp3');
   this.load.audio('shoot', 'assets/sounds/shoot.mp3');
