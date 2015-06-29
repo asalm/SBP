@@ -47,8 +47,8 @@ SBP.Menu.prototype = {
 		this.playButton1.scale.y = 0.7;
     
 		this.playButton2 = this.game.add.button(this.game.world.centerX,this.game.world.centerY+165,"gamepad",this.gamePad,this);
-		this.playButton2.scale.x = 0.3;
-		this.playButton2.scale.y = 0.3;
+		this.playButton2.scale.x = 1;
+		this.playButton2.scale.y = 1;
 
 		this.playButton3 = this.game.add.button(this.game.world.centerX+200,this.game.world.centerY+165,"touch",this.touch,this);
 		this.playButton3.scale.x = 0.1;
@@ -59,7 +59,7 @@ SBP.Menu.prototype = {
 		this.playButton3.anchor.setTo(0.5,0.5);
 		this.choose.anchor.setTo(0.5,0.5);
 
-		this.playButton2.scale.set(0.5);
+		this.playButton2.scale.set(0.55);
 		this.playButton3.scale.set(0.3);
 
 
