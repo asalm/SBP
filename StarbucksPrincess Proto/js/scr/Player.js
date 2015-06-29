@@ -1,8 +1,9 @@
 
-	Player = function (game, x,y){
+	Player = function (game, x,y,count){
 		Phaser.Sprite.call(this, game, x,y, 'player');
 		game.add.existing(this);
-		
+		this.count = count;
+		//this game = game;
 	}
 	
 	Player.prototype = Object.create(Phaser.Sprite.prototype);
@@ -19,6 +20,10 @@
 		this.animations.add('stay', [10,11,12,13], 5, true);
 		this.animations.add('eat',[15,16,17,18,19,18,17,16,15], 5, false);
 		this.body.collideWorldBounds = true;
+		this.beanTime = 0;
+		
+		this.createLostBean();
+		this.createShootBean();
 	}
 
 	Player.prototype.moveRight = function(maxSpeed, walk){
@@ -41,31 +46,58 @@
 		this.body.velocity.y = -400;
 	}
 	
-
-
-/*
- 
-Player = function(game){
-	this.load.spritesheet('player', 'assets/char/nSlime_32x36_sheet.png', 32, 36);
-	Phaser.Sprite.call(this, game, 'player');
-	//game.add.existing(this);
-	game.physics.enable(this, Phaser.Physics.ARCADE);
+	Player.prototype.createLostBean = function(){
+		this.lostBean = this.game.add.group();
+		this.lostBean.enableBody = true;
+		this.lostBean.createMultiple(100, 'Coffeebean');
+		this.lostBean.setAll('outOfBoundsKill', true);
+		this.lostBean.setAll('checkWorldBounds', true);
+	}
 	
-	//this.body=true;
-	//this.bounce.y = 0.2; //bei Aufprall zurückbouncen ... ist ja nen Blob!
-	//this.body.bounce.x = 0.2;
-    //this.body.gravity.y = 700;
-	console.log("bla");
-}
-Player.prototype = Object.create(Phaser.Sprite.prototype);
-Player.prototype.constructor = Player;
-
-Player.prototype.moveRight = function(maxSpeed, walk){
-	this.body.velocity.x = +maxSpeed;
-        //this.player.animations.play('right');
-		
-		if(!this.walk.isPlaying && body.onFloor())
-			this.walk.play();
-}
-
-*/
+	Player.prototype.createShootBean = function(){
+		this.shootBean = this.game.add.group();
+		this.shootBean.setAll('outOfBoundsKill', true);
+		this.shootBean.setAll.collideWorldBounds = true;
+		this.shootBean=this.game.add.physicsGroup(Phaser.Physics.ARCADE);
+		//this.projectiles = this.game.add.group(this.shootBean);
+		//this.projectiles.enableBody = true;
+	}
+	
+	Player.prototype.fireBean = function(){
+		 if (this.game.time.now > this.beanTime){   
+			if(this.count > 0){
+				this.fBean = this.shootBean.create(this.x+15, this.y+15,'Coffeebean',1);
+				this.count--;
+				this.fBean.enableBody = true;
+				if (this.fBean)
+					{
+					 //this.fBean.reset(this.player.x+15, this.player.y+15);
+					 if(leftKey.isDown)
+						this.fBean.body.velocity.x = -400;
+					 else
+						this.fBean.body.velocity.x = +400;
+					
+					// this.shoot.play();
+					 this.beanTime = this.game.time.now + 200;
+					 this.shootBean.setAll('scale.x',.5);
+					 this.shootBean.setAll('scale.y',.5);
+					}
+			}
+		 }
+	}
+	
+	
+	
+	Player.prototype.getCount = function(){
+		return this.count;
+	}
+	
+	Player.prototype.setCount = function(count){
+		this.count++;
+	}
+	
+	Player.prototype.looseBean = function(count){
+		this.count--;
+	}
+	
+	

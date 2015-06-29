@@ -3,13 +3,16 @@ var SBP = SBP || {};
 SBP.Game = function(){};
  
 SBP.Game.prototype = {
+		
+	init: function(controls){
+		this.controls = controls;
+	},
  
   preload: function() {
  
       this.game.time.advancedTiming = true;
 
       this.map = this.game.add.tilemap('level1');
-
  
     //the first parameter is the tileset name as specified in Tiled, the second is the key to the asset
 	this.bg = this.game.add.tileSprite(0, 0,640,480, 'background');
@@ -23,9 +26,6 @@ SBP.Game.prototype = {
    
     this.blockedLayer = this.map.createLayer('BlockedLayer');
 
-
-
- 
     //resizes the game world to match the layer dimensions
     this.blockedLayer.resizeWorld();
 
@@ -47,15 +47,6 @@ SBP.Game.prototype = {
 	this.count=4;
 	this.game.stage.backgroundColor = '#787878';
 	
-	// Background Image
-
-	this.beanCounter = this.game.add.image(this.game.stage.centerX, this.game.stage.centerY,"beanCounter");
-	this.beanCounter.fixedToCamera = true;
-	this.beanCounter.bringToTop();
-	this.beanCounter.scale.x = 2;
-	this.beanCounter.scale.y = 2;
-	this.beanCounter.anchor.setTo(-8.8,-0.1);
-	
 	//Erstellt für jedes Object aus der Tiled-Map im ObjectLayer in Objekt im Game
 	this.TiledGedingse = new TiledGedingse(this.game, this.map);
 	this.TiledGedingse.create();
@@ -72,7 +63,7 @@ SBP.Game.prototype = {
 
  	
 	//this.player = new Player(this.game, 2000,2700);
-	this.player = new Player(this.game, 50, 50);
+	this.player = new Player(this.game, 50, 50, this.count);
 	this.player.create();
 	//testposition//
 	//this.player = this.game.add.sprite(120,500,'player');	
@@ -82,48 +73,29 @@ SBP.Game.prototype = {
     this.overlay = this.map.createLayer('Overlay');
     this.overlay.enableBody = true;
 
-	//create lostBean
-	this.lostBean = this.game.add.group();
-    this.lostBean.enableBody = true;
-    this.lostBean.createMultiple(100, 'Coffeebean');
-    this.lostBean.setAll('outOfBoundsKill', true);
-    this.lostBean.setAll('checkWorldBounds', true);
-	
-	
-	//create shootBean
-	
-	
-	this.shootBean = this.game.add.group();
-    this.shootBean.setAll('outOfBoundsKill', true);
-    this.shootBean.setAll.collideWorldBounds = true;
-	this.shootBean=this.game.add.physicsGroup(Phaser.Physics.ARCADE);
-	
-	this.projectiles = this.game.add.group(this.shootBean);
-	this.projectiles.enableBody = true;
-
 		
     //Camera-Movement
     this.game.camera.follow(this.player);
-    //this.player.body.collideWorldBounds = true; //Kollision des Spielers
-	//this.boss.body.collideWorldBounds = true;
-
-    //  By default the ship will collide with the World bounds,
-    //  however because you have changed the size of the world (via layer.resizeWorld) to match the tilemap
-    //  you need to rebuild the physics world boundary as well. The following
-    //  line does that. The first 4 parameters control if you need a boundary on the left, right, top and bottom of your world.
-    //  The final parameter (false) controls if the boundary should use its own collision group or not. In this case we don't require
-    //  that, so it's set to false. But if you had custom collision groups set-up then you would need this set to true.
-
+   
 	this.bossPointer = this.game.add.graphics(2579.17,2812);
 	
 
     //InputParameter
+	
+	if(this.controls === 'keyB'){
 	  this.cursors = this.game.input.keyboard.createCursorKeys(); //Pfeiltasten aktivieren
 	  upKey = this.game.input.keyboard.addKey(Phaser.Keyboard.UP);
       downKey = this.game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
       leftKey = this.game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
       rightKey = this.game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
 	  fireKey = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+	}
+	else if(this.controls === 'touch'){
+	  this.pad = this.game.plugins.add(Phaser.VirtualJoystick);
+	  this.stick = this.pad.addDPad(100, 500, 200, 'dpad');
+	  this.buttonA = this.pad.addButton(610, 530, 'dpad', 'button1-up', 'button1-down');
+      this.buttonB = this.pad.addButton(745, 460, 'dpad', 'button2-up', 'button2-down');
+	}
 	  
 	// Background Image
 	this.beanCounter = this.game.add.image(this.game.stage.centerX, this.game.stage.centerY,"beanCounter");
@@ -141,19 +113,16 @@ SBP.Game.prototype = {
   update: function() {
 	this.game.physics.arcade.TILE_BIAS = 600;
   	this.game.physics.arcade.collide(this.player, this.blockedLayer); //Kollision mit Layer
-  	this.game.physics.arcade.overlap(this.player, this.blockedLayer); //Kollision mit Layer
-  	
-	this.game.physics.arcade.collide(this.TiledGedingse.enemy, this.blockedLayer, this.enemyMove); //Kollision mit Layer
-	this.game.physics.arcade.overlap(this.shootBean, this.blockedLayer, this.collisionHandler, null, this);
-	this.game.physics.arcade.collide(this.shootBean, this.TiledGedingse.enemy, this.collisionHandlerEnemy);
+  	//this.game.physics.arcade.overlap(this.player, this.blockedLayer); //Kollision mit Layer
+  	this.game.physics.arcade.collide(this.TiledGedingse.enemy, this.blockedLayer, this.enemyMove); //Kollision mit Layer
+	this.game.physics.arcade.overlap(this.player.shootBean, this.blockedLayer, this.collisionHandler, null, this);
+	this.game.physics.arcade.collide(this.player.shootBean, this.TiledGedingse.enemy, this.collisionHandlerEnemy);
 	this.game.physics.arcade.collide(this.player, this.TiledGedingse.enemy, this.hitDanger);
 	this.game.physics.arcade.overlap(this.player, this.TiledGedingse.bean, this.collectBean, null, this);
     this.game.physics.arcade.overlap(this.player, this.TiledGedingse.mahlwerk, this.hitDanger, null, this);
     this.game.physics.arcade.overlap(this.player, this.TiledGedingse.deadly, this.hitDeadly, null, this);
-   	//this.game.physics.arcade.collide(this.fCup, this.player, this.hitCup, null, this);
-	//this.game.physics.arcade.collide(this.fCup, this.blockedLayer, this.collisionHandler);
-    this.game.physics.arcade.overlap(this.player, this.overlay, this.overlaycollisionHandler, null, this);
-	
+   	this.game.physics.arcade.overlap(this.player, this.overlay, this.overlaycollisionHandler, null, this);
+		
 	if(this.boss){
 		this.game.physics.arcade.collide(this.boss, this.blockedLayer);
 		this.game.physics.arcade.collide(this.shootBean, this.boss, this.bossbeanCollision, null, this);
@@ -193,7 +162,7 @@ SBP.Game.prototype = {
 	
 	if (fireKey.isDown)
 	{
-		this.fireBean();
+		this.player.fireBean();
 	}	
 
 	if(this.game.physics.arcade.distanceBetween(this.player, this.bossPointer) < 10 && !(this.boss)){
@@ -208,12 +177,12 @@ SBP.Game.prototype = {
   render: function()
  
     { 
-        this.game.debug.text(this.game.time.fps || '--', 20, 70, "#00ff00", "40px Courier");  
-		this.game.debug.text(this.count, 595, 40 , "#00000", "36px Impact"); //Bohnenzähler
+        //this.game.debug.text(this.game.time.fps || '--', 20, 70, "#00ff00", "40px Courier");  
+		this.game.debug.text(this.player.getCount(), 595, 40 , "#00000", "36px Impact"); //Bohnenzähler
 		//this.game.debug.text(this.text, 20, 230, "#ffffff", "45px Courier");
-		this.game.debug.bodyInfo(this.player, 16, 24);
-		this.game.debug.text(this.game.time.now, 20, 250, "#00ff00", "48px Courier");
-		this.game.debug.text(this.bosslife,20,280,"#00ff00","24px Courier");
+		//this.game.debug.bodyInfo(this.player, 16, 24);
+		//this.game.debug.text(this.game.time.now, 20, 250, "#00ff00", "48px Courier");
+		//this.game.debug.text(this.bosslife,20,280,"#00ff00","24px Courier");
 		
     },
 
@@ -223,39 +192,10 @@ SBP.Game.prototype = {
 
     console.log("Animation läuft!");
     bean.kill();
-	this.count++;	
+	this.player.setCount();	
     
   	},
-  
-  
-    
-  fireBean: function(){
-	
-     if (this.game.time.now > this.beanTime){   
-		if(this.count > 0){
-			this.fBean = this.shootBean.create(this.player.x+15, this.player.y+15,'Coffeebean',1);
-						
-			this.count--;
 
-			this.fBean.enableBody = true;
-			
-			if (this.fBean)
-				{
-				 //this.fBean.reset(this.player.x+15, this.player.y+15);
-				 if(leftKey.isDown)
-					this.fBean.body.velocity.x = -400;
-				 else
-					this.fBean.body.velocity.x = +400;
-				
-				 this.shoot.play();
-				 this.beanTime = this.game.time.now + 200;
-				 this.shootBean.setAll('scale.x',.5);
-				 this.shootBean.setAll('scale.y',.5);
-				}
-		}
-	}
-  },
-  
   hitDeadly: function(player) {
   	this.player.kill();
   	this.counter = 0;
@@ -265,9 +205,11 @@ SBP.Game.prototype = {
 
   hitDanger: function(player, danger) {
 	  //Bohne verlieren und erschrockenes Wegbouncen
-  	this.looseBean();
-    this.player.body.velocity.y =-250;
+	this.looseBean();
+	this.player.body.velocity.y =-250;
  },
+ 
+ 
  
  hitCup: function(projectiles) {
 	  //Bohne verlieren ohne erschrockenes Wegbouncen
@@ -278,15 +220,16 @@ SBP.Game.prototype = {
  
  bodyCheck: function(){
 	 this.looseBean();
+	 
  },
  
  looseBean: function(){
 	
      if (this.game.time.now > this.beanTime)
     {   
-		if(this.count > 0){
-			this.lBean = this.lostBean.getFirstExists(false);
-			this.count--;
+		if(this.player.getCount() > 0){
+			this.lBean = this.player.lostBean.getFirstExists(false);
+			this.player.looseBean();
 			if (this.lBean)
 				{
 				 this.lBean.reset(this.player.x, this.player.y);

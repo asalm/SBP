@@ -72,7 +72,7 @@ SBP.Menu.prototype = {
   	},
   keyB: function() {
  
-    this.state.start('Game');
+    this.state.start('Game',false,false,'keyB');
  
   }
   /*
