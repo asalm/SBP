@@ -74,18 +74,18 @@ SBP.Menu.prototype = {
  
     this.state.start('Game',false,false,'keyB');
  
-  }
-  /*
+  },
+  
   gamePad: function() {
  
-    this.state.start('GameMitPad');
+    this.state.start('Game',false,false,'pad');
  
   },
   
   touch: function() {
  
-    this.state.start('GameTOUCH');
+    this.state.start('Game',false,false,'touch');
  
   }
-  */
+  
  };

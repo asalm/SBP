@@ -33,6 +33,8 @@ SBP.Game.prototype = {
 	this.map.setCollisionBetween(1, 1000);
 
 	  this.game.physics.arcade.setBoundsToWorld(true, true, true, true, false);
+	  if(this.controls === 'touch')
+		  this.load.atlas('dpad', 'assets/joystick/dpad.png', 'assets/joystick/dpad.json');
     },
  
   create: function() {
@@ -92,9 +94,9 @@ SBP.Game.prototype = {
 	}
 	else if(this.controls === 'touch'){
 	  this.pad = this.game.plugins.add(Phaser.VirtualJoystick);
-	  this.stick = this.pad.addDPad(100, 500, 200, 'dpad');
-	  this.buttonA = this.pad.addButton(610, 530, 'dpad', 'button1-up', 'button1-down');
-      this.buttonB = this.pad.addButton(745, 460, 'dpad', 'button2-up', 'button2-down');
+	  this.stick = this.pad.addDPad(100, 390, 200, 'dpad');
+	  this.buttonA = this.pad.addButton(470, 430, 'dpad', 'button1-up', 'button1-down');
+      this.buttonB = this.pad.addButton(580, 380, 'dpad', 'button2-up', 'button2-down');
 	}
 	  
 	// Background Image
@@ -117,7 +119,7 @@ SBP.Game.prototype = {
   	this.game.physics.arcade.collide(this.TiledGedingse.enemy, this.blockedLayer, this.enemyMove); //Kollision mit Layer
 	this.game.physics.arcade.overlap(this.player.shootBean, this.blockedLayer, this.collisionHandler, null, this);
 	this.game.physics.arcade.collide(this.player.shootBean, this.TiledGedingse.enemy, this.collisionHandlerEnemy);
-	this.game.physics.arcade.collide(this.player, this.TiledGedingse.enemy, this.hitDanger);
+	this.game.physics.arcade.collide(this.player, this.TiledGedingse.enemy, this.hitDanger, null, this);
 	this.game.physics.arcade.overlap(this.player, this.TiledGedingse.bean, this.collectBean, null, this);
     this.game.physics.arcade.overlap(this.player, this.TiledGedingse.mahlwerk, this.hitDanger, null, this);
     this.game.physics.arcade.overlap(this.player, this.TiledGedingse.deadly, this.hitDeadly, null, this);
@@ -132,45 +134,92 @@ SBP.Game.prototype = {
 		this.projectiles = this.game.add.group(this.shootBean,this.shootCup);
 		this.projectiles.enableBody = true;
 	}
-	//  Reset the players velocity (movement)
     this.player.body.velocity.x = 0; //sorgt dafür das nach Loslassen der Pfeiltasten die Spielfigur stehen bleibt
+	this.player.animations.play('stay');
 	var maxSpeed = 250;
 	
-	if (leftKey.isDown)
-    {
-        //  Move to the left
-        this.player.moveLeft(maxSpeed, this.walk);
-    }
-    else if (rightKey.isDown)
-    {
-        //  Move to the right
-        this.player.moveRight(maxSpeed, this.walk);
-       
-    }
-	
-    else
-    {
-        //  Stand still
-       this.player.animations.play('stay');
-    }
-		//Sprung
-	if (upKey.isDown && this.player.body.onFloor())
-	{
-		this.player.jump();
-		this.jump.play();
+	if(this.controls === 'keyB'){
+		if (leftKey.isDown){
+			this.player.moveLeft(maxSpeed, this.walk);
+		}
+		else if (rightKey.isDown){
+			this.player.moveRight(maxSpeed, this.walk);
+		}
+		
+		else{
+		   this.player.animations.play('stay');
+		}
+			
+		if (upKey.isDown && this.player.body.onFloor()){
+			this.player.jump(this.jump);
+		}
+		
+		if (fireKey.isDown){
+			this.player.fireBeanKey(this.shoot);
+		}	
 	}
+	else if(this.controls === 'touch'){
+		if (this.stick.isDown){
+			this.player.body.velocity.set = 0;
+			
+			if (this.stick.direction === Phaser.LEFT){
+				this.player.moveLeft(maxSpeed, this.walk);
+			}
+			else if (this.stick.direction === Phaser.RIGHT){
+				this.player.moveRight(maxSpeed, this.walk);
+			}
 	
-	if (fireKey.isDown)
-	{
-		this.player.fireBean();
-	}	
+		}else{
+			this.player.animations.play('stay');
+			this.player.body.velocity.x = 0; //sorgt dafür das nach Loslassen der Pfeiltasten die Spielfigur stehen bleibt
+		}
+		
+		if(this.buttonA.isDown && this.player.body.onFloor()){
+			this.player.jump(this.jump);
+		}
+		
+		if(this.buttonB.isDown){
+			this.player.fireBeanTouch(this.stick.direction,this.shoot);
+		}
+			
+		}
 
-	if(this.game.physics.arcade.distanceBetween(this.player, this.bossPointer) < 10 && !(this.boss)){
-		this.boss = new Boss(this.game, 2700,2700);
-		this.boss.create(this.player);
+		if(this.game.physics.arcade.distanceBetween(this.player, this.bossPointer) < 10 && !(this.boss)){
+			this.boss = new Boss(this.game, 2700,2700);
+			this.boss.create(this.player);
+		}
+		
+	else if(this.controls === 'pad'){
+		
+		var gamepads;
+		var gamepad;
+
+		if (navigator.getGamepads) {
+			gamepads = navigator.getGamepads();
+			if(gamepads) {
+				gamepad = gamepads[0];
+			}
+		}
+		
+		if (gamepad) {
+			if (gamepad.buttons[15].pressed) {//rechts
+			  this.player.moveRight(maxSpeed, this.walk);
+			}
+			
+			if (gamepad.buttons[14].pressed) {//links
+			  this.player.moveLeft(maxSpeed, this.walk);
+			}
+
+			if (gamepad.buttons[1].pressed) {
+			  this.player.fireBeanPad(this.shoot,gamepad.buttons[14].pressed);
+			}
+			
+			if (gamepad.buttons[0].pressed && this.player.body.onFloor()) {
+				this.player.jump(this.jump);
+			}
+	    }
+			
 	}
-	
-	
  },
 
  
@@ -311,7 +360,7 @@ enemyMove: function(enemy){
  },
  neustart: function(){
 	
-	 this.state.start('Game');
+	 this.state.start('Game',false,false,this.controls);
  }
 
  

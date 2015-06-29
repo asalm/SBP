@@ -18,7 +18,7 @@
 		this.animations.add('left', [0,1,2,3,4], 5, true); // Lauf-Animation
 		this.animations.add('right', [5,6,7,8,9], 5, true);
 		this.animations.add('stay', [10,11,12,13], 5, true);
-		this.animations.add('eat',[15,16,17,18,19,18,17,16,15], 5, false);
+		this.animations.add('eat',[15,16,17,18,19,18,17,16,15], 3, false);
 		this.body.collideWorldBounds = true;
 		this.beanTime = 0;
 		
@@ -42,8 +42,9 @@
 			walk.play();
 	}
 	
-	Player.prototype.jump = function(){
+	Player.prototype.jump = function(jump){
 		this.body.velocity.y = -400;
+		jump.play();
 	}
 	
 	Player.prototype.createLostBean = function(){
@@ -63,21 +64,58 @@
 		//this.projectiles.enableBody = true;
 	}
 	
-	Player.prototype.fireBean = function(){
+	Player.prototype.fireBeanTouch = function(direction,shoot){
 		 if (this.game.time.now > this.beanTime){   
 			if(this.count > 0){
 				this.fBean = this.shootBean.create(this.x+15, this.y+15,'Coffeebean',1);
 				this.count--;
 				this.fBean.enableBody = true;
-				if (this.fBean)
-					{
-					 //this.fBean.reset(this.player.x+15, this.player.y+15);
+				if (this.fBean){
+						 if(direction === Phaser.LEFT)
+							this.fBean.body.velocity.x = -400;
+						 else
+							this.fBean.body.velocity.x = +400;					
+					 shoot.play();
+					 this.beanTime = this.game.time.now + 200;
+					 this.shootBean.setAll('scale.x',.5);
+					 this.shootBean.setAll('scale.y',.5);
+					}
+			}
+		 }
+	}
+	
+	Player.prototype.fireBeanKey = function(shoot){
+		 if (this.game.time.now > this.beanTime){   
+			if(this.count > 0){
+				this.fBean = this.shootBean.create(this.x+15, this.y+15,'Coffeebean',1);
+				this.count--;
+				this.fBean.enableBody = true;
+				if (this.fBean){
 					 if(leftKey.isDown)
 						this.fBean.body.velocity.x = -400;
 					 else
 						this.fBean.body.velocity.x = +400;
-					
-					// this.shoot.play();
+					 shoot.play();
+					 this.beanTime = this.game.time.now + 200;
+					 this.shootBean.setAll('scale.x',.5);
+					 this.shootBean.setAll('scale.y',.5);
+					}
+			}
+		 }
+	}
+	
+	Player.prototype.fireBeanPad = function(shoot,pressed){
+		 if (this.game.time.now > this.beanTime){   
+			if(this.count > 0){
+				this.fBean = this.shootBean.create(this.x+15, this.y+15,'Coffeebean',1);
+				this.count--;
+				this.fBean.enableBody = true;
+				if (this.fBean){
+					 if(pressed)
+						this.fBean.body.velocity.x = -400;
+					 else
+						this.fBean.body.velocity.x = +400;
+					 shoot.play();
 					 this.beanTime = this.game.time.now + 200;
 					 this.shootBean.setAll('scale.x',.5);
 					 this.shootBean.setAll('scale.y',.5);
