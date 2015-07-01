@@ -33,6 +33,8 @@ SBP.Preload.prototype = {
   this.load.spritesheet("boss", "assets/images/endboss.png",113,125);
   //Map
     this.load.tilemap('level1', 'assets/tileset/map01.json', null, Phaser.Tilemap.TILED_JSON);
+    this.load.tilemap('level2', 'assets/tileset/map02.json',null,Phaser.Tilemap.TILED_JSON);
+    this.load.tilemap('level3', 'asstes/tileset/map03.json', null.Phaser.Tilemap.TILED_JSON);
   //Tileset
     this.load.image('gameTiles', 'assets/tileset/tilemap.png');
   //Bohne sprite
