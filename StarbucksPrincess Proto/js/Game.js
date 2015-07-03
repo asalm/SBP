@@ -361,7 +361,7 @@ enemyMove: function(enemy){
  },
  
  levelWechsel: function(){
-	 this.state.start('level2',false,false,this.controls, this.count);
+	 this.state.start('level2',false,false,this.controls, this.player.getCount());
  },
  
  neustart: function(){

@@ -39,7 +39,7 @@ SBP.level2.prototype = {
     },
  
   create: function() {
-
+	console.log(this.count);
 	var map;
 	var cursors;
 	this.bosslife = 10;
