@@ -34,7 +34,7 @@ SBP.Preload.prototype = {
   //Map
     this.load.tilemap('level1', 'assets/tileset/map01.json', null, Phaser.Tilemap.TILED_JSON);
     this.load.tilemap('level2', 'assets/tileset/map02.json',null,Phaser.Tilemap.TILED_JSON);
-    this.load.tilemap('level3', 'asstes/tileset/map03.json', null.Phaser.Tilemap.TILED_JSON);
+    this.load.tilemap('level3', 'assets/tileset/map03.json', null,Phaser.Tilemap.TILED_JSON);
   //Tileset
     this.load.image('gameTiles', 'assets/tileset/tilemap.png');
   //Bohne sprite
@@ -52,6 +52,7 @@ SBP.Preload.prototype = {
   
 	this.game.load.script('Boss', 'js/scr/Boss.js');
 	this.game.load.script('TiledGedingse', 'js/scr/TiledGedingse.js');
+	//this.game.load.script('level2', 'js/level2.js');
   //Sounds
   this.load.audio('walk', 'assets/sounds/walk.mp3');
   this.load.audio('shoot', 'assets/sounds/shoot.mp3');

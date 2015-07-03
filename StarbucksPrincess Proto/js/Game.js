@@ -65,7 +65,7 @@ SBP.Game.prototype = {
 
  	
 	//this.player = new Player(this.game, 2000,2700);
-	this.player = new Player(this.game, 50, 50, this.count);
+	this.player = new Player(this.game, 3099, 220, this.count);
 	this.player.create();
 	//testposition//
 	//this.player = this.game.add.sprite(120,500,'player');	
@@ -79,8 +79,8 @@ SBP.Game.prototype = {
     //Camera-Movement
     this.game.camera.follow(this.player);
    
-	this.bossPointer = this.game.add.graphics(2579.17,2812);
-	
+	//this.bossPointer = this.game.add.graphics(2579.17,2812);
+	this.levelPointer = this.game.add.graphics(3136,250);
 
     //InputParameter
 	
@@ -123,7 +123,7 @@ SBP.Game.prototype = {
 	this.game.physics.arcade.overlap(this.player, this.TiledGedingse.bean, this.collectBean, null, this);
     this.game.physics.arcade.overlap(this.player, this.TiledGedingse.mahlwerk, this.hitDanger, null, this);
     this.game.physics.arcade.overlap(this.player, this.TiledGedingse.deadly, this.hitDeadly, null, this);
-   	this.game.physics.arcade.overlap(this.player, this.overlay, this.overlaycollisionHandler, null, this);
+   	this.game.physics.arcade.collide(this.player, this.overlay, this.overlaycollisionHandler, null, this);
 		
 	if(this.boss){
 		this.game.physics.arcade.collide(this.boss, this.blockedLayer);
@@ -184,9 +184,10 @@ SBP.Game.prototype = {
 			
 		}
 
-		if(this.game.physics.arcade.distanceBetween(this.player, this.bossPointer) < 10 && !(this.boss)){
-			this.boss = new Boss(this.game, 2700,2700);
-			this.boss.create(this.player);
+		if(this.game.physics.arcade.distanceBetween(this.player, this.levelPointer) < 10){
+		//	this.boss = new Boss(this.game, 2700,2700);
+			//this.boss.create(this.player);
+			this.levelWechsel();
 		}
 		
 	else if(this.controls === 'pad'){
@@ -229,7 +230,7 @@ SBP.Game.prototype = {
         //this.game.debug.text(this.game.time.fps || '--', 20, 70, "#00ff00", "40px Courier");  
 		this.game.debug.text(this.player.getCount(), 595, 40 , "#00000", "36px Impact"); //Bohnenzähler
 		//this.game.debug.text(this.text, 20, 230, "#ffffff", "45px Courier");
-		//this.game.debug.bodyInfo(this.player, 16, 24);
+		this.game.debug.bodyInfo(this.player, 16, 24);
 		//this.game.debug.text(this.game.time.now, 20, 250, "#00ff00", "48px Courier");
 		//this.game.debug.text(this.bosslife,20,280,"#00ff00","24px Courier");
 		
@@ -358,6 +359,11 @@ enemyMove: function(enemy){
 	 //this.reloadbutton.anchor.setTo(-0.8,-1);
 
  },
+ 
+ levelWechsel: function(){
+	 this.state.start('level2',false,false,this.controls, this.count);
+ },
+ 
  neustart: function(){
 	
 	 this.state.start('Game',false,false,this.controls);
