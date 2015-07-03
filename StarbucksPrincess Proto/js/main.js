@@ -14,6 +14,6 @@ SBP.game.state.add('Menu', SBP.Menu);
 
 SBP.game.state.add('Game', SBP.Game);
 
-SBP.game.state.add('level2', SBP.Game);
+SBP.game.state.add('level2', SBP.level2);
 
 SBP.game.state.start('Boot');

@@ -13,7 +13,7 @@ SBP.level2.prototype = {
  
       this.game.time.advancedTiming = true;
 
-      this.map = this.game.add.tilemap('level1');
+      this.map = this.game.add.tilemap('level2');
  
     //the first parameter is the tileset name as specified in Tiled, the second is the key to the asset
 	this.bg = this.game.add.tileSprite(0, 0,640,480, 'background');
@@ -66,7 +66,7 @@ SBP.level2.prototype = {
 
  	
 	//this.player = new Player(this.game, 2000,2700);
-	this.player = new Player(this.game, 3163, 280, this.count);
+	this.player = new Player(this.game, 3136, 280, this.count);
 	this.player.create();
 	//testposition//
 	//this.player = this.game.add.sprite(120,500,'player');	
