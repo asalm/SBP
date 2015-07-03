@@ -1,8 +1,8 @@
 var SBP = SBP || {};
  
-SBP.level2 = function(){};
+SBP.level3 = function(){};
  
-SBP.level2.prototype = {
+SBP.level3.prototype = {
 		
 	init: function(controls, count){
 		this.controls = controls;
@@ -13,7 +13,7 @@ SBP.level2.prototype = {
  
       this.game.time.advancedTiming = true;
 
-      this.map = this.game.add.tilemap('level2');
+      this.map = this.game.add.tilemap('level3');
  
     //the first parameter is the tileset name as specified in Tiled, the second is the key to the asset
 	this.bg = this.game.add.tileSprite(0, 0,640,480, 'background');
@@ -66,9 +66,7 @@ SBP.level2.prototype = {
 
  	
 	//this.player = new Player(this.game, 2000,2700);
-	this.player = new Player(this.game, 3136, 280, this.count);
-	//Position vor Übergang
-	//this.player = new Player(this.game, 250, 280, this.count);
+	this.player = new Player(this.game, 3129, 1512, this.count);
 	this.player.create();
 	//testposition//
 	//this.player = this.game.add.sprite(120,500,'player');	
@@ -82,8 +80,8 @@ SBP.level2.prototype = {
     //Camera-Movement
     this.game.camera.follow(this.player);
    
-	//this.bossPointer = this.game.add.graphics(2579.17,2812);
-	this.levelPointer = this.game.add.graphics(3136,924);
+	this.bossPointer = this.game.add.graphics(2579.17,2812);
+	
 
     //InputParameter
 	
@@ -141,12 +139,6 @@ SBP.level2.prototype = {
 	this.player.animations.play('stay');
 	var maxSpeed = 250;
 	
-		if(this.game.physics.arcade.distanceBetween(this.player, this.levelPointer) < 10){
-		//	this.boss = new Boss(this.game, 2700,2700);
-			//this.boss.create(this.player);
-			this.levelWechsel();
-		}
-
 	if(this.controls === 'keyB'){
 		if (leftKey.isDown){
 			this.player.moveLeft(maxSpeed, this.walk);
@@ -167,8 +159,6 @@ SBP.level2.prototype = {
 			this.player.fireBeanKey(this.shoot);
 		}	
 	}
-
-
 	else if(this.controls === 'touch'){
 		if (this.stick.isDown){
 			this.player.body.velocity.set = 0;
@@ -194,12 +184,12 @@ SBP.level2.prototype = {
 		}
 			
 		}
-		/*
+
 		if(this.game.physics.arcade.distanceBetween(this.player, this.bossPointer) < 10 && !(this.boss)){
 			this.boss = new Boss(this.game, 2700,2700);
 			this.boss.create(this.player);
 		}
-		*/
+		
 	else if(this.controls === 'pad'){
 		
 		var gamepads;
@@ -231,8 +221,6 @@ SBP.level2.prototype = {
 	    }
 			
 	}
-	
-
  },
 
  
@@ -371,12 +359,9 @@ enemyMove: function(enemy){
 	 //this.reloadbutton.anchor.setTo(-0.8,-1);
 
  },
-  levelWechsel: function(){
-	 this.state.start('level3',false,false,this.controls, this.player.getCount());
- },
  neustart: function(){
 	
-	 this.state.start('level2',false,false,this.controls, this.player.getCount());
+	 this.state.start('level3',false,false,this.controls,this.player.getCounter());
  }
 
  

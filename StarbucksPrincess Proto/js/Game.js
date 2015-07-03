@@ -65,7 +65,7 @@ SBP.Game.prototype = {
 
  	
 	//this.player = new Player(this.game, 2000,2700);
-	this.player = new Player(this.game, 3099, 220, this.count);
+	this.player = new Player(this.game, 70, 80, this.count);
 	this.player.create();
 	//testposition//
 	//this.player = this.game.add.sprite(120,500,'player');	
@@ -138,6 +138,12 @@ SBP.Game.prototype = {
 	this.player.animations.play('stay');
 	var maxSpeed = 250;
 	
+	if(this.game.physics.arcade.distanceBetween(this.player, this.levelPointer) < 10){
+		//	this.boss = new Boss(this.game, 2700,2700);
+		//this.boss.create(this.player);
+		this.levelWechsel();
+	}
+
 	if(this.controls === 'keyB'){
 		if (leftKey.isDown){
 			this.player.moveLeft(maxSpeed, this.walk);
@@ -184,11 +190,7 @@ SBP.Game.prototype = {
 			
 		}
 
-		if(this.game.physics.arcade.distanceBetween(this.player, this.levelPointer) < 10){
-		//	this.boss = new Boss(this.game, 2700,2700);
-			//this.boss.create(this.player);
-			this.levelWechsel();
-		}
+	
 		
 	else if(this.controls === 'pad'){
 		
@@ -221,6 +223,7 @@ SBP.Game.prototype = {
 	    }
 			
 	}
+	
  },
 
  
