@@ -59,6 +59,11 @@ SBP.Game.prototype = {
 	this.death = this.game.add.audio('death');
 	this.shoot = this.game.add.audio('shoot');
 	this.jump = this.game.add.audio('jump');
+	this.bgm = this.game.add.audio('bgm');
+	this.bgm.sound.play('bgm');
+	//this.game.sound.play('bgm');
+
+    //bgm.loopFull(0.6);
 	
 	//this.game.sound.setDecodedCallback([ this.walk, this.hit, this.death, this.shoot ], start, this);
     //create player

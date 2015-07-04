@@ -361,7 +361,7 @@ enemyMove: function(enemy){
  },
  neustart: function(){
 	
-	 this.state.start('level3',false,false,this.controls,this.player.getCounter());
+	 this.state.start('level3',false,false,this.controls,this.player.getCount());
  }
 
  

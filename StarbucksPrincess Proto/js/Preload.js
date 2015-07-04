@@ -59,6 +59,7 @@ SBP.Preload.prototype = {
   this.load.audio('death', 'assets/sounds/death.mp3');
   this.load.audio('hit', 'assets/sounds/hit.mp3');
   this.load.audio('jump', 'assets/sounds/jump.mp3');
+  this.load.audio('bgm', 'assets/sounds/BGM.mp3');
   
   },
  
