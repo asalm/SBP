@@ -60,7 +60,8 @@ SBP.Game.prototype = {
 	this.shoot = this.game.add.audio('shoot');
 	this.jump = this.game.add.audio('jump');
 	this.bgm = this.game.add.audio('bgm');
-	this.bgm.sound.play('bgm');
+	this.sound.play('bgm');
+	this.bgm.loopFull();
 	//this.game.sound.play('bgm');
 
     //bgm.loopFull(0.6);
@@ -70,7 +71,7 @@ SBP.Game.prototype = {
 
  	
 	//this.player = new Player(this.game, 2000,2700);
-	this.player = new Player(this.game, 70, 80, this.count);
+	this.player = new Player(this.game, 50, 50, this.count);
 	this.player.create();
 	//testposition//
 	//this.player = this.game.add.sprite(120,500,'player');	
@@ -238,7 +239,7 @@ SBP.Game.prototype = {
         //this.game.debug.text(this.game.time.fps || '--', 20, 70, "#00ff00", "40px Courier");  
 		this.game.debug.text(this.player.getCount(), 595, 40 , "#00000", "36px Impact"); //Bohnenzähler
 		//this.game.debug.text(this.text, 20, 230, "#ffffff", "45px Courier");
-		this.game.debug.bodyInfo(this.player, 16, 24);
+		//this.game.debug.bodyInfo(this.player, 16, 24);
 		//this.game.debug.text(this.game.time.now, 20, 250, "#00ff00", "48px Courier");
 		//this.game.debug.text(this.bosslife,20,280,"#00ff00","24px Courier");
 		
@@ -369,12 +370,12 @@ enemyMove: function(enemy){
  },
  
  levelWechsel: function(){
-	 this.state.start('level2',false,false,this.controls, this.player.getCount());
+	 this.state.start('level2',true,false,this.controls, this.player.getCount());
  },
  
  neustart: function(){
 	
-	 this.state.start('Game',false,false,this.controls);
+	 this.state.start('Game',true,false,this.controls);
  }
 
  
