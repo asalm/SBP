@@ -10,36 +10,27 @@ SBP.level3.prototype = {
 	},
  
   preload: function() {
- 
-      this.game.time.advancedTiming = true;
-
-      this.map = this.game.add.tilemap('level3');
- 
+    this.game.time.advancedTiming = true;
+	this.map = this.game.add.tilemap('level3');
     //the first parameter is the tileset name as specified in Tiled, the second is the key to the asset
 	this.bg = this.game.add.tileSprite(0, 0,640,480, 'background');
 	this.bg.fixedToCamera = true;
 	//this.background.tileScale(200,200);
     this.map.addTilesetImage('World', 'gameTiles');
- 
     //create layers
  	this.underlay = this.map.createLayer('Underlay');
     this.walk = this.map.createLayer('Walk');
-   
     this.blockedLayer = this.map.createLayer('BlockedLayer');
-
     //resizes the game world to match the layer dimensions
     this.blockedLayer.resizeWorld();
-
     //collision on blockedLayer
 	this.map.setCollisionBetween(1, 1000);
-
-	  this.game.physics.arcade.setBoundsToWorld(true, true, true, true, false);
-	  if(this.controls === 'touch')
-		  this.load.atlas('dpad', 'assets/joystick/dpad.png', 'assets/joystick/dpad.json');
+	this.game.physics.arcade.setBoundsToWorld(true, true, true, true, false);
+	if(this.controls === 'touch')
+		this.load.atlas('dpad', 'assets/joystick/dpad.png', 'assets/joystick/dpad.json');
     },
  
   create: function() {
-	console.log(this.count);
 	var map;
 	var cursors;
 	this.bosslife = 10;
@@ -47,13 +38,10 @@ SBP.level3.prototype = {
 	this.text = "";
 	var beanTime;
 	this.beanTime = 0;
-	//this.count=4;
 	this.game.stage.backgroundColor = '#787878';
-	
 	//Erstellt für jedes Object aus der Tiled-Map im ObjectLayer in Objekt im Game
 	this.TiledGedingse = new TiledGedingse(this.game, this.map);
 	this.TiledGedingse.create();
-
   	//create sounds
 	this.walk = this.game.add.audio('walk');
 	this.hit = this.game.add.audio('hit');
@@ -61,30 +49,16 @@ SBP.level3.prototype = {
 	this.shoot = this.game.add.audio('shoot');
 	this.jump = this.game.add.audio('jump');
 	
-	//this.game.sound.setDecodedCallback([ this.walk, this.hit, this.death, this.shoot ], start, this);
-    //create player
-
- 	
-	//this.player = new Player(this.game, 2000,2700);
 	this.player = new Player(this.game, 3129, 1512, this.count);
 	this.player.create();
-	//testposition//
-	//this.player = this.game.add.sprite(120,500,'player');	
-	//startposition// this.player = this.game.add.sprite(50,50,'player');
-    //bossposition// this.player = this.game.add.sprite(2700,2800,'player');; //Spieler erstellen, Startposition, Name
 	
     this.overlay = this.map.createLayer('Overlay');
     this.overlay.enableBody = true;
-
-		
     //Camera-Movement
     this.game.camera.follow(this.player);
-   
-	this.bossPointer = this.game.add.graphics(2579.17,2812);
+   	this.bossPointer = this.game.add.graphics(2579.17,2812);
 	
-
     //InputParameter
-	
 	if(this.controls === 'keyB'){
 	  this.cursors = this.game.input.keyboard.createCursorKeys(); //Pfeiltasten aktivieren
 	  upKey = this.game.input.keyboard.addKey(Phaser.Keyboard.UP);
@@ -107,8 +81,6 @@ SBP.level3.prototype = {
 	this.beanCounter.scale.x = 1;
 	this.beanCounter.scale.y = 1;
 	this.beanCounter.anchor.x = -4.2;
-	//this.beanCounter.anchor.y = -0.0;
-	
  }, 
   
  
@@ -116,7 +88,6 @@ SBP.level3.prototype = {
   update: function() {
 	this.game.physics.arcade.TILE_BIAS = 600;
   	this.game.physics.arcade.collide(this.player, this.blockedLayer); //Kollision mit Layer
-  	//this.game.physics.arcade.overlap(this.player, this.blockedLayer); //Kollision mit Layer
   	this.game.physics.arcade.collide(this.TiledGedingse.enemy, this.blockedLayer, this.enemyMove); //Kollision mit Layer
 	this.game.physics.arcade.overlap(this.player.shootBean, this.blockedLayer, this.collisionHandler, null, this);
 	this.game.physics.arcade.collide(this.player.shootBean, this.TiledGedingse.enemy, this.collisionHandlerEnemy);
@@ -135,6 +106,7 @@ SBP.level3.prototype = {
 		this.projectiles = this.game.add.group(this.shootBean,this.shootCup);
 		this.projectiles.enableBody = true;
 	}
+	
     this.player.body.velocity.x = 0; //sorgt dafür das nach Loslassen der Pfeiltasten die Spielfigur stehen bleibt
 	this.player.animations.play('stay');
 	var maxSpeed = 250;
@@ -191,10 +163,8 @@ SBP.level3.prototype = {
 		}
 		
 	else if(this.controls === 'pad'){
-		
 		var gamepads;
 		var gamepad;
-
 		if (navigator.getGamepads) {
 			gamepads = navigator.getGamepads();
 			if(gamepads) {
@@ -224,45 +194,37 @@ SBP.level3.prototype = {
  },
 
  
-  render: function()
- 
-    { 
-        //this.game.debug.text(this.game.time.fps || '--', 20, 70, "#00ff00", "40px Courier");  
-		this.game.debug.text(this.player.getCount(), 595, 40 , "#00000", "36px Impact"); //Bohnenzähler
-		//this.game.debug.text(this.text, 20, 230, "#ffffff", "45px Courier");
-		//this.game.debug.bodyInfo(this.player, 16, 24);
-		//this.game.debug.text(this.game.time.now, 20, 250, "#00ff00", "48px Courier");
-		//this.game.debug.text(this.bosslife,20,280,"#00ff00","24px Courier");
-		
+  render: function(){ 
+    //this.game.debug.text(this.game.time.fps || '--', 20, 70, "#00ff00", "40px Courier");  
+	this.game.debug.text(this.player.getCount(), 595, 40 , "#00000", "36px Impact"); //Bohnenzähler
+	//this.game.debug.text(this.text, 20, 230, "#ffffff", "45px Courier");
+	//this.game.debug.bodyInfo(this.player, 16, 24);
+	//this.game.debug.text(this.game.time.now, 20, 250, "#00ff00", "48px Courier");
+	//this.game.debug.text(this.bosslife,20,280,"#00ff00","24px Courier");
     },
 
 	collectBean: function (player, bean) {
     // Entfernt die Bohne aus der Map und Bohnenzähler hochsetzen
     player.animations.play('eat');
-
-    console.log("Animation läuft!");
     bean.kill();
 	this.player.setCount();	
-    
-  	},
+},
 
   hitDeadly: function(player) {
   	this.player.kill();
   	this.counter = 0;
   	this.gameOver();
   	this.death.play();
-  },
+},
 
   hitDanger: function(player, danger) {
 	  //Bohne verlieren und erschrockenes Wegbouncen
 	this.looseBean();
 	this.player.body.velocity.y =-250;
- },
- 
- 
+},
  
  hitCup: function(projectiles) {
-	  //Bohne verlieren ohne erschrockenes Wegbouncen
+	//Bohne verlieren ohne erschrockenes Wegbouncen
 	this.player.body.immovable =true;  
   	this.looseBean();
 	projectiles.kill();
@@ -270,13 +232,10 @@ SBP.level3.prototype = {
  
  bodyCheck: function(){
 	 this.looseBean();
-	 
  },
  
  looseBean: function(){
-	
-     if (this.game.time.now > this.beanTime)
-    {   
+     if (this.game.time.now > this.beanTime){   
 		if(this.player.getCount() > 0){
 			this.lBean = this.player.lostBean.getFirstExists(false);
 			this.player.looseBean();
@@ -295,11 +254,9 @@ SBP.level3.prototype = {
 	}
   },
  
- overlaycollisionHandler: function(player, overlay){//overlay, player){
- 	Console.log("Overlay transparent Junge!")
+ overlaycollisionHandler: function(player, overlay){
  	overlay.alpha = 0.3;
  	overlay.dirty = true;
-
  	return false;
  },
 
@@ -310,14 +267,12 @@ SBP.level3.prototype = {
  bossbeanCollision : function(projectiles, boss){
  	projectiles.kill();
 	this.bosslife--;
-
 	if(this.bosslife === 0){
 		boss.kill();
 	}
 },
  
  collisionHandlerEnemy: function(projectiles, enemy){
-	 
 	 //Bohne weg, Gegner weg
 	 projectiles.kill();
 	 enemy.animations.play('stay');
@@ -325,8 +280,7 @@ SBP.level3.prototype = {
 	 enemy.body.checkCollision.up=false;
 	 enemy.body.checkCollision.left=false;
 	 enemy.body.checkCollision.right=false;
-	 	 
-	},
+},
 
 enemyMove: function(enemy){
 	//lässt enemy wenden und in die entgegen gesetzte Richtung laufen, wenn Wand im Weg
@@ -338,31 +292,20 @@ enemyMove: function(enemy){
 	  enemy.animations.play('left');
 	  enemy.body.velocity.x = -50;
 	}
-	
 },
-
-
  
  gameOver: function(){
-	 this.gameover = this.game.add.image(-78,-80,"gameover");
-	 //this.gameover.scale.x = 0.5;
-	 //this.gameover.scale.y = 0.5;
-	 //this.gameover.anchor.setTo(0.5,0.5)
-	 this.gameover.fixedToCamera = true;
-	 
+	this.gameover = this.game.add.image(-78,-80,"gameover");
+	this.gameover.fixedToCamera = true;
 	this.reloadbutton = this.game.add.button(300, 275,"reload",this.neustart,this);
 	this.reloadbutton.fixedToCamera = true;
 	this.reloadbutton.scale.x = 1;
 	this.reloadbutton.scale.y = 1;
-	 //this.reloadButton.scale.setTo(0.7,0.7);
-	 //reloadButton.scale.y = 0.7;*/
-	 //this.reloadbutton.anchor.setTo(-0.8,-1);
-
  },
  neustart: function(){
-	
-	 this.state.start('level3',true,false,this.controls,this.player.getCount());
+	this.bgm.destroy();
+	this.player.kill();
+	this.state.start('level3',true,false,this.controls,this.player.getCount());
  }
-
  
 };

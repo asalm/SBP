@@ -9,21 +9,17 @@ SBP.Game.prototype = {
 	},
  
   preload: function() {
- 
-      this.game.time.advancedTiming = true;
-
-      this.map = this.game.add.tilemap('level1');
+	this.game.time.advancedTiming = true;
+	this.map = this.game.add.tilemap('level1');
  
     //the first parameter is the tileset name as specified in Tiled, the second is the key to the asset
 	this.bg = this.game.add.tileSprite(0, 0,640,480, 'background');
 	this.bg.fixedToCamera = true;
-	//this.background.tileScale(200,200);
-    this.map.addTilesetImage('World', 'gameTiles');
+	this.map.addTilesetImage('World', 'gameTiles');
  
     //create layers
  	this.underlay = this.map.createLayer('Underlay');
     this.walk = this.map.createLayer('Walk');
-   
     this.blockedLayer = this.map.createLayer('BlockedLayer');
 
     //resizes the game world to match the layer dimensions
@@ -32,16 +28,15 @@ SBP.Game.prototype = {
     //collision on blockedLayer
 	this.map.setCollisionBetween(1, 1000);
 
-	  this.game.physics.arcade.setBoundsToWorld(true, true, true, true, false);
-	  if(this.controls === 'touch')
-		  this.load.atlas('dpad', 'assets/joystick/dpad.png', 'assets/joystick/dpad.json');
+	this.game.physics.arcade.setBoundsToWorld(true, true, true, true, false);
+	if(this.controls === 'touch')
+		this.load.atlas('dpad', 'assets/joystick/dpad.png', 'assets/joystick/dpad.json');
     },
  
   create: function() {
 
 	var map;
 	var cursors;
-	this.bosslife = 10;
 	var text;
 	this.text = "";
 	var beanTime;
@@ -52,6 +47,7 @@ SBP.Game.prototype = {
 	//Erstellt für jedes Object aus der Tiled-Map im ObjectLayer in Objekt im Game
 	this.TiledGedingse = new TiledGedingse(this.game, this.map);
 	this.TiledGedingse.create();
+	
 
   	//create sounds
 	this.walk = this.game.add.audio('walk');
@@ -62,30 +58,16 @@ SBP.Game.prototype = {
 	this.bgm = this.game.add.audio('bgm');
 	this.sound.play('bgm');
 	this.bgm.loopFull();
-	//this.game.sound.play('bgm');
-
-    //bgm.loopFull(0.6);
 	
-	//this.game.sound.setDecodedCallback([ this.walk, this.hit, this.death, this.shoot ], start, this);
     //create player
-
- 	
-	//this.player = new Player(this.game, 2000,2700);
 	this.player = new Player(this.game, 50, 50, this.count);
 	this.player.create();
-	//testposition//
-	//this.player = this.game.add.sprite(120,500,'player');	
-	//startposition// this.player = this.game.add.sprite(50,50,'player');
-    //bossposition// this.player = this.game.add.sprite(2700,2800,'player');; //Spieler erstellen, Startposition, Name
-	
+	//Camera-Movement
+    this.game.camera.follow(this.player);
+		
     this.overlay = this.map.createLayer('Overlay');
     this.overlay.enableBody = true;
-
-		
-    //Camera-Movement
-    this.game.camera.follow(this.player);
-   
-	//this.bossPointer = this.game.add.graphics(2579.17,2812);
+		  
 	this.levelPointer = this.game.add.graphics(3136,250);
 
     //InputParameter
@@ -111,17 +93,12 @@ SBP.Game.prototype = {
 	this.beanCounter.bringToTop();
 	this.beanCounter.scale.x = 1;
 	this.beanCounter.scale.y = 1;
-	this.beanCounter.anchor.x = -4.2;
-	//this.beanCounter.anchor.y = -0.0;
-	
+	this.beanCounter.anchor.x = -4.2;	
  }, 
-  
- 
 
   update: function() {
 	this.game.physics.arcade.TILE_BIAS = 600;
   	this.game.physics.arcade.collide(this.player, this.blockedLayer); //Kollision mit Layer
-  	//this.game.physics.arcade.overlap(this.player, this.blockedLayer); //Kollision mit Layer
   	this.game.physics.arcade.collide(this.TiledGedingse.enemy, this.blockedLayer, this.enemyMove); //Kollision mit Layer
 	this.game.physics.arcade.overlap(this.player.shootBean, this.blockedLayer, this.collisionHandler, null, this);
 	this.game.physics.arcade.collide(this.player.shootBean, this.TiledGedingse.enemy, this.collisionHandlerEnemy);
@@ -131,22 +108,11 @@ SBP.Game.prototype = {
     this.game.physics.arcade.overlap(this.player, this.TiledGedingse.deadly, this.hitDeadly, null, this);
    	this.game.physics.arcade.collide(this.player, this.overlay, this.overlaycollisionHandler, null, this);
 		
-	if(this.boss){
-		this.game.physics.arcade.collide(this.boss, this.blockedLayer);
-		this.game.physics.arcade.collide(this.shootBean, this.boss, this.bossbeanCollision, null, this);
-		this.game.physics.arcade.collide(this.player, this.boss,this.bodyCheck, null, this);
-		this.game.physics.arcade.collide(this.boss.shootCup, this.player, this.hitCup, null, this);
-		this.game.physics.arcade.collide(this.boss.shootCup, this.blockedLayer, this.collisionHandler);
-		this.projectiles = this.game.add.group(this.shootBean,this.shootCup);
-		this.projectiles.enableBody = true;
-	}
     this.player.body.velocity.x = 0; //sorgt dafür das nach Loslassen der Pfeiltasten die Spielfigur stehen bleibt
 	this.player.animations.play('stay');
 	var maxSpeed = 250;
 	
 	if(this.game.physics.arcade.distanceBetween(this.player, this.levelPointer) < 10){
-		//	this.boss = new Boss(this.game, 2700,2700);
-		//this.boss.create(this.player);
 		this.levelWechsel();
 	}
 
@@ -173,7 +139,6 @@ SBP.Game.prototype = {
 	else if(this.controls === 'touch'){
 		if (this.stick.isDown){
 			this.player.body.velocity.set = 0;
-			
 			if (this.stick.direction === Phaser.LEFT){
 				this.player.moveLeft(maxSpeed, this.walk);
 			}
@@ -185,31 +150,23 @@ SBP.Game.prototype = {
 			this.player.animations.play('stay');
 			this.player.body.velocity.x = 0; //sorgt dafür das nach Loslassen der Pfeiltasten die Spielfigur stehen bleibt
 		}
-		
 		if(this.buttonA.isDown && this.player.body.onFloor()){
 			this.player.jump(this.jump);
 		}
-		
 		if(this.buttonB.isDown){
 			this.player.fireBeanTouch(this.stick.direction,this.shoot);
 		}
-			
-		}
+	}
 
-	
-		
 	else if(this.controls === 'pad'){
-		
 		var gamepads;
 		var gamepad;
-
 		if (navigator.getGamepads) {
 			gamepads = navigator.getGamepads();
 			if(gamepads) {
 				gamepad = gamepads[0];
 			}
 		}
-		
 		if (gamepad) {
 			if (gamepad.buttons[15].pressed) {//rechts
 			  this.player.moveRight(maxSpeed, this.walk);
@@ -226,33 +183,24 @@ SBP.Game.prototype = {
 			if (gamepad.buttons[0].pressed && this.player.body.onFloor()) {
 				this.player.jump(this.jump);
 			}
-	    }
-			
+	    }	
 	}
-	
  },
 
- 
-  render: function()
- 
-    { 
-        //this.game.debug.text(this.game.time.fps || '--', 20, 70, "#00ff00", "40px Courier");  
-		this.game.debug.text(this.player.getCount(), 595, 40 , "#00000", "36px Impact"); //Bohnenzähler
-		//this.game.debug.text(this.text, 20, 230, "#ffffff", "45px Courier");
-		//this.game.debug.bodyInfo(this.player, 16, 24);
-		//this.game.debug.text(this.game.time.now, 20, 250, "#00ff00", "48px Courier");
-		//this.game.debug.text(this.bosslife,20,280,"#00ff00","24px Courier");
-		
+  render: function(){ 
+    //this.game.debug.text(this.game.time.fps || '--', 20, 70, "#00ff00", "40px Courier");  
+	this.game.debug.text(this.player.getCount(), 595, 40 , "#00000", "36px Impact"); //Bohnenzähler
+	//this.game.debug.text(this.text, 20, 230, "#ffffff", "45px Courier");
+	//this.game.debug.bodyInfo(this.player, 16, 24);
+	//this.game.debug.text(this.game.time.now, 20, 250, "#00ff00", "48px Courier");
+	//this.game.debug.text(this.bosslife,20,280,"#00ff00","24px Courier");
     },
 
 	collectBean: function (player, bean) {
     // Entfernt die Bohne aus der Map und Bohnenzähler hochsetzen
     player.animations.play('eat');
-
-    console.log("Animation läuft!");
     bean.kill();
 	this.player.setCount();	
-    
   	},
 
   hitDeadly: function(player) {
@@ -270,7 +218,7 @@ SBP.Game.prototype = {
  
  
  
- hitCup: function(projectiles) {
+	hitCup: function(projectiles) {
 	  //Bohne verlieren ohne erschrockenes Wegbouncen
 	this.player.body.immovable =true;  
   	this.looseBean();
@@ -305,10 +253,8 @@ SBP.Game.prototype = {
   },
  
  overlaycollisionHandler: function(player, overlay){//overlay, player){
- 	Console.log("Overlay transparent Junge!")
  	overlay.alpha = 0.3;
  	overlay.dirty = true;
-
  	return false;
  },
 
@@ -316,14 +262,6 @@ SBP.Game.prototype = {
 	 projectiles.kill();
  },
  
- bossbeanCollision : function(boss, projectiles){
- 	projectiles.kill();
-	this.bosslife--;
-
-	if(this.bosslife === 0){
-		boss.kill();
-	}
-},
  
  collisionHandlerEnemy: function(projectiles, enemy){
 	 
@@ -334,7 +272,6 @@ SBP.Game.prototype = {
 	 enemy.body.checkCollision.up=false;
 	 enemy.body.checkCollision.left=false;
 	 enemy.body.checkCollision.right=false;
-	 	 
 	},
 
 enemyMove: function(enemy){
@@ -347,26 +284,16 @@ enemyMove: function(enemy){
 	  enemy.animations.play('left');
 	  enemy.body.velocity.x = -50;
 	}
-	
 },
 
 
- 
  gameOver: function(){
-	 this.gameover = this.game.add.image(-78,-80,"gameover");
-	 //this.gameover.scale.x = 0.5;
-	 //this.gameover.scale.y = 0.5;
-	 //this.gameover.anchor.setTo(0.5,0.5)
-	 this.gameover.fixedToCamera = true;
-	 
+	this.gameover = this.game.add.image(-78,-80,"gameover");
+	this.gameover.fixedToCamera = true;
 	this.reloadbutton = this.game.add.button(300, 275,"reload",this.neustart,this);
 	this.reloadbutton.fixedToCamera = true;
 	this.reloadbutton.scale.x = 1;
 	this.reloadbutton.scale.y = 1;
-	 //this.reloadButton.scale.setTo(0.7,0.7);
-	 //reloadButton.scale.y = 0.7;*/
-	 //this.reloadbutton.anchor.setTo(-0.8,-1);
-
  },
  
  levelWechsel: function(){
@@ -374,9 +301,10 @@ enemyMove: function(enemy){
  },
  
  neustart: function(){
+	this.bgm.destroy();
+	this.player.kill();
+	this.state.start('Game',true,false,this.controls);
 	
-	 this.state.start('Game',true,false,this.controls);
  }
-
  
 };

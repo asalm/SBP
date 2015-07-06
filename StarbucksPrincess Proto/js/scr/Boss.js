@@ -24,8 +24,7 @@
 
 	Boss.prototype.bossFight = function(player){
 		this.animations.play('walk');
-	
-			
+				
 		//nach links oben 
 		this.game.time.events.add(Phaser.Timer.SECOND * 1, function start(){
 			this.game.physics.arcade.moveToXY(this,2500,2600,200,700);
@@ -96,15 +95,14 @@
 			this.body.velocity.setTo(0,0);
 			var dirX = 2700;
 			var dirY = 2900;
-				this.fireCup(dirX,dirY);
-				this.fireCup(dirX-50,dirY-50);
-				this.fireCup(dirX-100,dirY-75);
-				this.fireCup(dirX-150,dirY-150);
-				this.fireCup(dirX,dirY-400);
-				this.fireCup(dirX+150,dirY-150);
-				this.fireCup(dirX+200,dirY-75);
-				this.fireCup(dirX+250,dirY-150);
-				
+			this.fireCup(dirX,dirY);
+			this.fireCup(dirX-50,dirY-50);
+			this.fireCup(dirX-100,dirY-75);
+			this.fireCup(dirX-150,dirY-150);
+			this.fireCup(dirX,dirY-400);
+			this.fireCup(dirX+150,dirY-150);
+			this.fireCup(dirX+200,dirY-75);
+			this.fireCup(dirX+250,dirY-150);
 			}, this);
 			
 		this.game.time.events.add(Phaser.Timer.SECOND * 13, function part2(){
@@ -114,9 +112,7 @@
 	
 	Boss.prototype.fireCup = function(x,y,shootCup){
 		this.fCup = this.shootCup.create(this.x+50, this.y+20,'Becher',1); 
-
-			if (this.fCup)
-				{
-				 this.game.physics.arcade.moveToXY(this.fCup,x,y,600);
-				}  
+		if (this.fCup){
+			this.game.physics.arcade.moveToXY(this.fCup,x,y,600);
+		}  
 	}

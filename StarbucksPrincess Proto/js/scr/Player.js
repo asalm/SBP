@@ -3,7 +3,6 @@
 		Phaser.Sprite.call(this, game, x,y, 'player');
 		game.add.existing(this);
 		this.count = count;
-		//this game = game;
 	}
 	
 	Player.prototype = Object.create(Phaser.Sprite.prototype);
@@ -21,6 +20,8 @@
 		this.animations.add('eat',[15,16,17,18,19,18,17,16,15], 3, false);
 		this.body.collideWorldBounds = true;
 		this.beanTime = 0;
+		this.body.tilePadding.x = 0;
+		this.body.tilePadding.y = -10;
 		
 		this.createLostBean();
 		this.createShootBean();
@@ -60,8 +61,6 @@
 		this.shootBean.setAll('outOfBoundsKill', true);
 		this.shootBean.setAll.collideWorldBounds = true;
 		this.shootBean=this.game.add.physicsGroup(Phaser.Physics.ARCADE);
-		//this.projectiles = this.game.add.group(this.shootBean);
-		//this.projectiles.enableBody = true;
 	}
 	
 	Player.prototype.fireBeanTouch = function(direction,shoot){
