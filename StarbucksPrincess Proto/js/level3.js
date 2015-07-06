@@ -48,6 +48,9 @@ SBP.level3.prototype = {
 	this.death = this.game.add.audio('death');
 	this.shoot = this.game.add.audio('shoot');
 	this.jump = this.game.add.audio('jump');
+	this.bgm = this.game.add.audio('bgm');
+	this.sound.play('bgm');
+	this.bgm.loopFull();
 	
 	this.player = new Player(this.game, 3129, 1512, this.count);
 	this.player.create();
@@ -305,7 +308,7 @@ enemyMove: function(enemy){
  neustart: function(){
 	this.bgm.destroy();
 	this.player.kill();
-	this.state.start('level3',true,false,this.controls,this.player.getCount());
+	this.state.start('level3',true,false,this.controls,5);
  }
  
 };

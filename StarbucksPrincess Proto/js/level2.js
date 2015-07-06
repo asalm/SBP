@@ -51,6 +51,9 @@ SBP.level2.prototype = {
 	this.death = this.game.add.audio('death');
 	this.shoot = this.game.add.audio('shoot');
 	this.jump = this.game.add.audio('jump');
+	this.bgm = this.game.add.audio('bgm');
+	this.sound.play('bgm');
+	this.bgm.loopFull();
 	
 	
     //create player
@@ -285,13 +288,13 @@ SBP.level2.prototype = {
 	},
 	 
 	levelWechsel: function(){
+		this.bgm.destroy();
 		this.state.start('level3',true,false,this.controls, this.player.getCount());
 	},
 	
 	neustart: function(){
 		this.bgm.destroy();
-		this.player.kill();
-		this.state.start('level2',true,false,this.controls, this.player.getCount());
+		this.state.start('level2',true,false,this.controls, 5);
 	}
 
 };

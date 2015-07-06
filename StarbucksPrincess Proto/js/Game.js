@@ -297,6 +297,7 @@ enemyMove: function(enemy){
  },
  
  levelWechsel: function(){
+	 this.bgm.destroy();
 	 this.state.start('level2',true,false,this.controls, this.player.getCount());
  },
  
